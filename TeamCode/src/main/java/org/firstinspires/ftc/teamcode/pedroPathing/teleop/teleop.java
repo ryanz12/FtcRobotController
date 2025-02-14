@@ -10,7 +10,7 @@ public class teleop extends LinearOpMode {
 
     @Override
     public void runOpMode(){
-        arm_motor = hardwareMap.get(DcMotor.class, "rotateMotor");
+        arm_motor = hardwareMap.get(DcMotor.class, "specimenSlide");
         waitForStart();
 
         while(opModeIsActive()){
