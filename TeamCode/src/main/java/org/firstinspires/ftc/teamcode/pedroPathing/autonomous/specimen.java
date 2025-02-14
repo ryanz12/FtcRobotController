@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "Left Path", group = "Autonomous")
+@Autonomous(name = "Specimen", group = "Autonomous")
 public class specimen extends LinearOpMode {
     private MecanumDrive drive;
     private Pose2d beginPose;
