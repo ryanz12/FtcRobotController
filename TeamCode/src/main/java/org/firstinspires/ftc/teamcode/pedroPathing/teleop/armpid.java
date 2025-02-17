@@ -15,7 +15,7 @@ public class armpid extends OpMode {
     private PIDController pid_controller;
     public static double p = 0, i = 0, d = 0;
     public static double f = 0;
-
+    //W code
     // test
     public static int target_pos = 0;
     public final double ticks_in_degree = 537.7 / 360;
