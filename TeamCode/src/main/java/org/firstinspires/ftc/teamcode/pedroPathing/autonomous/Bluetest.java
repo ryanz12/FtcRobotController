@@ -67,9 +67,9 @@ public class Bluetest extends LinearOpMode {
                 .stopAndAdd(new Slide(slideMotor, 1800))
                 .strafeTo(new Vector2d(-56, -57))
                 .waitSeconds(0.25)
-                .stopAndAdd(new Intake(intakeServo, 0))
-                .waitSeconds(0.35)
                 .stopAndAdd(new Intake(intakeServo, 1))
+                .waitSeconds(0.35)
+                .stopAndAdd(new Intake(intakeServo, 0))
                 .stopAndAdd(new Slide(slideMotor, 0))
                 .build();
 
@@ -97,9 +97,9 @@ public class Bluetest extends LinearOpMode {
                 .stopAndAdd(new Slide(slideMotor, 1850))
                 .strafeTo(new Vector2d(-52, -58))
                 .waitSeconds(0.5)
-                .stopAndAdd(new Intake(intakeServo, 0))
-                .waitSeconds(0.25)
                 .stopAndAdd(new Intake(intakeServo, 1))
+                .waitSeconds(0.25)
+                .stopAndAdd(new Intake(intakeServo, 0))
                 .stopAndAdd(new Slide(slideMotor, 0))
                 .build();
 
@@ -127,9 +127,9 @@ public class Bluetest extends LinearOpMode {
                 .stopAndAdd(new Slide(slideMotor, 1850))
                 .strafeTo(new Vector2d(-52, -58))
                 .waitSeconds(0.5)
-                .stopAndAdd(new Intake(intakeServo, 0))
-                .waitSeconds(0.25)
                 .stopAndAdd(new Intake(intakeServo, 1))
+                .waitSeconds(0.25)
+                .stopAndAdd(new Intake(intakeServo, 0))
                 .build();
 
         Action lower_arm3 = drive.actionBuilder(new Pose2d(-58, -56, Math.toRadians(-137)))
@@ -156,7 +156,7 @@ public class Bluetest extends LinearOpMode {
                         new ParallelAction(
                                 phase1,
                                 new Arm(rotateMotor, 1250),
-                                new Intake(intakeServo, 1)
+                                new Intake(intakeServo, 0)
                         ),
                         phase2,
                         new ParallelAction(
