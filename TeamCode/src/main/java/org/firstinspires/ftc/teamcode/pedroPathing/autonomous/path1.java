@@ -192,7 +192,7 @@ path1 extends LinearOpMode {
             return reached_position();
         }
     }
-//hi
+
     // -------------------------INTAKE-------------------------
     private class Intake implements Action {
         CRServo intakeServo;

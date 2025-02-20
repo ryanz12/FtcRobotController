@@ -17,12 +17,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-
 
 @Config
 @Autonomous(name = "blue test", group = "Autonomous")
@@ -32,7 +30,6 @@ public class Bluetest extends LinearOpMode {
     private DcMotor rotateMotor, slideMotor;
     private CRServo intakeServo;
     private DistanceSensor distanceSensor;
-
 
     // actionBuilder builds from the drive steps passed to it
     @Override
