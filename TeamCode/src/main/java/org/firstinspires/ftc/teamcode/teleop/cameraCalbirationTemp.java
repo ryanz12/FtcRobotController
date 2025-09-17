@@ -38,9 +38,9 @@ public class cameraCalbirationTemp extends LinearOpMode {
 
                     telemetry.addData("Tag ID", detection.id);
                     telemetry.addData("3D Distance (m)", distance);
-                    telemetry.addData("Distance X (m)", x);
-                    telemetry.addData("Distance Y (m)", y);
-                    telemetry.addData("Distance Z (m)", z);
+                    telemetry.addData("Distance X (m)", x/1000);
+                    telemetry.addData("Distance Y (m)", y/1000);
+                    telemetry.addData("Distance Z (m)", z/1000);
                     telemetry.addData("Pitch in degrees", pitch);
                 }
             }
