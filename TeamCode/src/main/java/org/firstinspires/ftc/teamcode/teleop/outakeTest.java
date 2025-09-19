@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp
 public class outakeTest extends LinearOpMode {
 
-    private DcMotor leftShooter,rightShooter,RightFront;
+    private DcMotor leftShooter,rightShooter,intake;
 
     @Override
     public void runOpMode() {
         leftShooter = hardwareMap.get(DcMotor.class, "leftFront");
         rightShooter = hardwareMap.get(DcMotor.class,"leftBack");
-        RightFront = hardwareMap.get(DcMotor.class,"rightFront");
+        intake = hardwareMap.get(DcMotor.class,"rightFront");
 
         waitForStart();
 
