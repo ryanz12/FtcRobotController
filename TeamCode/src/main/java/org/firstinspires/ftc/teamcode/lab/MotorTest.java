@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name="MotorTestInstant")
-public class motorTest extends LinearOpMode {
+public class MotorTest extends LinearOpMode {
 
     private DcMotor intake;
 

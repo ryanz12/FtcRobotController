@@ -7,7 +7,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 @TeleOp
-public class cameraCalbirationTemp extends LinearOpMode {
+public class CameraCalibrationTemp extends LinearOpMode {
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
 
