@@ -3,20 +3,23 @@ package org.firstinspires.ftc.teamcode.command;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.subsystem.BeltSubsyetm;
+import org.firstinspires.ftc.teamcode.subsystem.BeltSubsystem;
 
 public class BeltCommand extends CommandBase {
-    public BeltSubsyetm beltSubsyetm;
+    public BeltSubsystem beltSubsystem;
+
+    // Having a gamepad in here has no use
     public Gamepad gamepad;
 
-    public BeltCommand(BeltSubsyetm beltSubsyetm, Gamepad g){
-        this.beltSubsyetm = beltSubsyetm;
+    public BeltCommand(BeltSubsystem beltSubsystem, Gamepad g){
+        this.beltSubsystem = beltSubsystem;
         this.gamepad = g;
-        addRequirements(beltSubsyetm);
+        addRequirements(beltSubsystem);
     }
 
     @Override
     public void execute(){
-        beltSubsyetm.MoveBelt(true);
+        // Wait... when are you not moving the ramp up?
+        beltSubsystem.move_belt(BeltSubsystem.Direction.UTR);
     }
 }

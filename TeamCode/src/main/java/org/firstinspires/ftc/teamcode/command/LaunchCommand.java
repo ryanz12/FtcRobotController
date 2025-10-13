@@ -12,12 +12,18 @@ public class LaunchCommand extends CommandBase {
     public LaunchCommand(LaunchSubsystem l, Gamepad g){
         this.launchSubsystem = l;
         this.gamepad = g;
+
         addRequirements(l);
     }
 
     @Override
     public void execute(){
         launchSubsystem.shoot();
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        launchSubsystem.stop();
     }
 
     @Override

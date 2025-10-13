@@ -13,10 +13,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     private MecanumDrive drive;
 
-    private String left_front_name;
-    private String left_back_name;
-    private String right_front_name;
-    private String right_back_name;
+    private String left_front_name = "leftFront";
+    private String left_back_name = "leftBack";
+    private String right_front_name = "rightFront";
+    private String right_back_name = "rightBack";
 
     public DriveSubsystem(HardwareMap hardwareMap){
         left_front = new Motor(hardwareMap, left_front_name, Motor.GoBILDA.RPM_312);
