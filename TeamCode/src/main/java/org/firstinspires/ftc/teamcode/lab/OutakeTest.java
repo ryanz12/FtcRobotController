@@ -28,7 +28,7 @@ public class OutakeTest extends LinearOpMode {
 
             // Example target input
             double xTarget = 2.0; // meters
-            double yTarget = 2.0; // meters
+            double yTarget = 1.5; // meters
             double flywheelRadius = 0.05; // meters
             double gearRatio = 1.0; // output:input
 
@@ -47,7 +47,7 @@ public class OutakeTest extends LinearOpMode {
                 telemetry.update();
 
                 // Spin motor to target velocity
-                shooterMotor.setVelocity(flywheelRPM * 28 / 60); // 28 ticks per rev example
+                shooterMotor.setVelocity(flywheelRPM * 1120 / 60); // Change this accordingly
 
                 sleep(3000); // spin for 3 seconds
                 shooterMotor.setPower(0);
