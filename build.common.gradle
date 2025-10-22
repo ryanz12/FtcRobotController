@@ -74,7 +74,7 @@ android {
         def matcher = vCodePattern.matcher(manifestText)
         matcher.find()
         def vCode = Integer.parseInt(matcher.group(1))
-        //
+        //h
         def vNamePattern = Pattern.compile("versionName=\"(.*)\"")
         matcher = vNamePattern.matcher(manifestText);
         matcher.find()

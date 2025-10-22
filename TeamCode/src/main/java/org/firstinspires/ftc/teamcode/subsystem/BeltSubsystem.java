@@ -25,7 +25,7 @@ public class BeltSubsystem extends SubsystemBase {
         belt_servo_two.setPower(direction == Direction.UTR ? -1 : 1);
     }
 
-    public void stop_intake() {
+    public void stop() {
         belt_servo_one.setPower(0);
         belt_servo_two.setPower(0);
     }

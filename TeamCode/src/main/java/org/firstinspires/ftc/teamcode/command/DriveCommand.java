@@ -20,7 +20,7 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute(){
-        double forward = gamepad.left_stick_y;
+        double forward = -gamepad.left_stick_y;
         double strafe = -gamepad.left_stick_x;
         double turn = -gamepad.right_stick_x;
 

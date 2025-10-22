@@ -54,8 +54,9 @@
 
 
 
-<!--            <goBILDA5201SeriesMotor name="slideMotor" port="0" />-->
-<!--            <goBILDA5202SeriesMotor name="actuatorMotor" port="1" />-->
+<!--            <goBILDA5201SeriesMotor name="intakeMotor" port="0" />-->
+            <goBILDA5202SeriesMotor name="launchMotor" port="0" />
+
 <!--            <goBILDA5202SeriesMotor name="rotateMotor" port="2" />-->
 <!--            <goBILDA5201SeriesMotor name="specimenSlide" port="3" />-->
             <!-- **********************************************************
@@ -191,6 +192,7 @@
         <LynxModule name="Control Hub" port="2">
             <!-- The built-in IMU is always port="0" bus="0" -->
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
+            <ContinuousRotationServo name="intakeServo" port="5" />
             <goBILDA5201SeriesMotor name="leftFront" port="0" />
             <goBILDA5201SeriesMotor name="rightFront" port="1" />
             <goBILDA5202SeriesMotor name="leftBack" port="2" />
