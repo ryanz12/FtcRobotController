@@ -43,7 +43,7 @@
         serialNumber="(embedded)" parentModuleAddress="2">
         <!--control hub configurations-->
         <!--motors-->
-
+        
 
             <!--color sensor-->
 <!--        <RevColorSensorV3 name="[...]" port="0" bus="[...]" />-->
