@@ -197,6 +197,7 @@
             <goBILDA5201SeriesMotor name="rightFront" port="1" />
             <goBILDA5202SeriesMotor name="leftBack" port="2" />
             <goBILDA5202SeriesMotor name="rightBack" port="3" />
+            <ContinuousRotationServo name="intakeServo" port="0"/>
         </LynxModule>
     </LynxUsbDevice>
 

@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.command;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.button.Button;
 import com.qualcomm.robotcore.hardware.Gamepad;
-
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 
 public class IntakeCommand extends CommandBase {
 
-    private IntakeSubsystem intakeSubsystem;
-
-    private Gamepad gamepad;
-
+    private final IntakeSubsystem intakeSubsystem;
+    private final Gamepad gamepad;
 
     public IntakeCommand(IntakeSubsystem i, Gamepad g) {
         this.intakeSubsystem = i;
@@ -21,11 +17,12 @@ public class IntakeCommand extends CommandBase {
     }
 
     @Override
-    public void execute(){
-        if (gamepad.x){
+    public void execute() {
+        if (gamepad.x) {
             intakeSubsystem.intake();
-        }
-        else {
+        } else if (gamepad.a) {
+            intakeSubsystem.outake();
+        } else {
             intakeSubsystem.stop();
         }
     }
@@ -36,7 +33,7 @@ public class IntakeCommand extends CommandBase {
     }
 
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return false;
     }
 }

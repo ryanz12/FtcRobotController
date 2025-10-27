@@ -4,13 +4,16 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.command.BeltCommand;
 import org.firstinspires.ftc.teamcode.command.DriveCommand;
+import org.firstinspires.ftc.teamcode.command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.command.ShootCommand;
 import org.firstinspires.ftc.teamcode.subsystem.BeltSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.LaunchSubsystem;
 
 @TeleOp
@@ -23,7 +26,9 @@ public class teleop extends CommandOpMode {
     private LaunchSubsystem launchSubsystem;
     private BeltSubsystem beltSubsystem;
 
-    private Button shoot_button, belt_button;
+    private IntakeSubsystem intakeSubsystem;
+
+    private Button shoot_button, belt_button, intake_button;
 
     // TODO:
     // Intake subsystem & command
@@ -39,6 +44,8 @@ public class teleop extends CommandOpMode {
         drive_subsystem = new DriveSubsystem(hardwareMap);
         drive_subsystem.setDefaultCommand(new DriveCommand(drive_subsystem, gamepad1));
 
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
+
 //        shoot_button = (new GamepadButton(shooting_controller, GamepadKeys.Button.X))
 //                .whenHeld(new ShootCommand(launchSubsystem, beltSubsystem, gamepad2));
 
@@ -47,5 +54,7 @@ public class teleop extends CommandOpMode {
 
         shoot_button = (new GamepadButton(shooting_controller))
                 .whenHeld(new ShootCommand(launchSubsystem, gamepad2));
+
+        intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem, gamepad2));
     }
 }

@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 @TeleOp(name="OutakeTest", group="test")
 public class OutakeTest extends LinearOpMode {
-
     private DcMotorEx shooterMotor;
     private VoltageSensor voltageSensor;
 
