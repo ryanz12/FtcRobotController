@@ -15,7 +15,7 @@ public class LaunchSubsystem extends SubsystemBase {
         launchMotor = hwMap.get(DcMotorEx.class, launchMotorName);
         launchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //https://www.reddit.com/r/FTC/comments/lfl82f/whats_the_difference_between_setvelocity_and/
         launchMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
     public void shoot(){
         launchMotor.setPower(1);

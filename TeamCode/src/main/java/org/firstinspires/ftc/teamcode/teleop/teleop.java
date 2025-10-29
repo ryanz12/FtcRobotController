@@ -44,17 +44,15 @@ public class teleop extends CommandOpMode {
         drive_subsystem = new DriveSubsystem(hardwareMap);
         drive_subsystem.setDefaultCommand(new DriveCommand(drive_subsystem, gamepad1));
 
+        launchSubsystem = new LaunchSubsystem(hardwareMap);
+        beltSubsystem = new BeltSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
-
-//        shoot_button = (new GamepadButton(shooting_controller, GamepadKeys.Button.X))
-//                .whenHeld(new ShootCommand(launchSubsystem, beltSubsystem, gamepad2));
-
-        belt_button = (new GamepadButton(shooting_controller))
-                .whenHeld(new BeltCommand(beltSubsystem, gamepad2));
-
-        shoot_button = (new GamepadButton(shooting_controller))
-                .whenHeld(new ShootCommand(launchSubsystem, gamepad2));
-
         intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem, gamepad2));
+
+        new GamepadButton(shooting_controller, GamepadKeys.Button.Y)
+                .whenPressed(new BeltCommand(beltSubsystem));
+
+        new GamepadButton(shooting_controller, GamepadKeys.Button.B)
+                .whenPressed(new ShootCommand(launchSubsystem,gamepad2));
     }
 }

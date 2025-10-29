@@ -9,6 +9,12 @@ public class IntakeCommand extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
     private final Gamepad gamepad;
 
+    private boolean intakeActive = false;
+    private boolean outtakeActive = false;
+
+    private boolean lastX = false;
+    private boolean lastA = false;
+
     public IntakeCommand(IntakeSubsystem i, Gamepad g) {
         this.intakeSubsystem = i;
         this.gamepad = g;
@@ -18,9 +24,25 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (gamepad.x) {
+        boolean currentX = gamepad.x;
+        boolean currentA = gamepad.a;
+
+        if (currentX && !lastX) {
+            intakeActive = !intakeActive;
+            outtakeActive = false;
+        }
+
+        if (currentA && !lastA) {
+            outtakeActive = !outtakeActive;
+            intakeActive = false;
+        }
+
+        lastX = currentX;
+        lastA = currentA;
+
+        if (intakeActive) {
             intakeSubsystem.intake();
-        } else if (gamepad.a) {
+        } else if (outtakeActive) {
             intakeSubsystem.outake();
         } else {
             intakeSubsystem.stop();
@@ -30,6 +52,8 @@ public class IntakeCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.stop();
+        intakeActive = false;
+        outtakeActive = false;
     }
 
     @Override

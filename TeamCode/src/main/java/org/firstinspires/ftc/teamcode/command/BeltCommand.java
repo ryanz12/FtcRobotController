@@ -7,30 +7,30 @@ import org.firstinspires.ftc.teamcode.subsystem.BeltSubsystem;
 
 public class BeltCommand extends CommandBase {
 
-    private BeltSubsystem belt_subsystem;
-    private Gamepad gamepad;
+    private final BeltSubsystem beltSubsystem;
+    private boolean movingUp = true; // track current direction
+    private boolean isRunning = false;
 
-    public BeltCommand(BeltSubsystem b, Gamepad g){
-        this.belt_subsystem = b;
-        this.gamepad = g;
-
-        addRequirements(b);
+    public BeltCommand(BeltSubsystem beltSubsystem) {
+        this.beltSubsystem = beltSubsystem;
+        addRequirements(beltSubsystem);
     }
 
     @Override
-    public void execute() {
-        if (gamepad.a){
-            belt_subsystem.move_belt(BeltSubsystem.Direction.UTR);
+    public void initialize() {
+        if (!isRunning) {
+            beltSubsystem.move_belt(movingUp ? BeltSubsystem.Direction.UTR : BeltSubsystem.Direction.DTR);
+            movingUp = !movingUp;
+            isRunning = true;
+        } else {
+            beltSubsystem.stop();
+            isRunning = false;
         }
     }
 
     @Override
-    public void end(boolean interrupted){
-        belt_subsystem.stop();
+    public boolean isFinished() {
+        return true; // ends instantly after toggling
     }
 
-    @Override
-    public boolean isFinished(){
-        return false;
-    }
 }
