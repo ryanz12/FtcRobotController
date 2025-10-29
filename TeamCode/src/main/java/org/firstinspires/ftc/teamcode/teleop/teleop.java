@@ -49,7 +49,7 @@ public class teleop extends CommandOpMode {
 
         new GamepadButton(shooting_controller, GamepadKeys.Button.Y)
                 .whenPressed(new BeltCommand(beltSubsystem));
-
+        //Maybe we should make this toggle as well.
         new GamepadButton(shooting_controller, GamepadKeys.Button.B)
                 .whenPressed(new ShootCommand(launchSubsystem,gamepad2));
     }
