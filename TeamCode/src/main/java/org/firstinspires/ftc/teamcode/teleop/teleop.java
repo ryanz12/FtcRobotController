@@ -31,10 +31,8 @@ public class teleop extends CommandOpMode {
     private Button shoot_button, belt_button, intake_button;
 
     // TODO:
-    // Intake subsystem & command
     // Double check shoot button and related
-    // Some subsystems use Motor, while others use DcMotor
-    // Probably not an issue though
+    // Need to adjust the outake to stop when power is off
 
     @Override
     public void initialize() {
