@@ -52,8 +52,8 @@
         <!--Expansion hub configurations-->
 
 
-
-
+                <!--We need to figure out how to add distance sensor to the xml -->
+<!--            <RevDistanceSensor name="[...]" port="1" bus="[...]" />-->
 <!--            <goBILDA5201SeriesMotor name="intakeMotor" port="0" />-->
             <goBILDA5202SeriesMotor name="launchMotor" port="0" />
 
