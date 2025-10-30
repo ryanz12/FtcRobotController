@@ -47,16 +47,16 @@ public class DriveCommand extends CommandBase {
     }
 
     private void normalControls() {
-        double forward = gamepad.left_stick_y * 0.75;
-        double strafe = gamepad.left_stick_x * 0.75;
-        double turn = -gamepad.right_stick_x* 0.75;
+        double forward = gamepad.left_stick_y;
+        double strafe = gamepad.left_stick_x;
+        double turn = -gamepad.right_stick_x;
         driveSubsystem.drive(strafe, forward, turn);
     }
 
     private void invertedControls() {
-        double forward = -gamepad.left_stick_y * 0.5;
-        double strafe = -gamepad.left_stick_x * 0.5;
-        double turn = - gamepad.right_stick_x * 0.5;
+        double forward = -gamepad.left_stick_y;
+        double strafe = -gamepad.left_stick_x;
+        double turn = - gamepad.right_stick_x;
         driveSubsystem.drive(strafe, forward, turn);
     }
 
