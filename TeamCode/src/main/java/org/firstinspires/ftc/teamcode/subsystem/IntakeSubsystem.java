@@ -17,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intake_servo.setPower(-1);
     }
 
-    public void outake() {
+    public void outtake() {
         intake_servo.setPower(1);
     }
 

@@ -45,7 +45,7 @@ public class teleop extends CommandOpMode {
         drive_subsystem = new DriveSubsystem(hardwareMap);
 
         drive_subsystem.setDefaultCommand(new DriveCommand(drive_subsystem, gamepad1));
-        intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem, gamepad2));
+        intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem, shooting_controller));
 
         new GamepadButton(shooting_controller)
                 .whenPressed(new BeltCommand(beltSubsystem, gamepad2));
