@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.subsystem.LaunchSubsystem;
 public class ShootCommand extends CommandBase {
     private final LaunchSubsystem launchSubsystem;
     private final Gamepad gamepad;
-
-    private boolean toSpin = false;
+    private boolean pastButtonPress = false;
+    private boolean shoot = false;
 
     public ShootCommand(LaunchSubsystem launchSubsystem, Gamepad gamepad) {
         this.launchSubsystem = launchSubsystem;
@@ -19,10 +19,15 @@ public class ShootCommand extends CommandBase {
 
     @Override
     public void execute() {
-        toSpin = !toSpin;
+        boolean currButtonPress = gamepad.b;
 
-        if(toSpin) launchSubsystem.shoot();
-        else launchSubsystem.stop();
+        if(currButtonPress && !pastButtonPress) {
+            shoot = !shoot;
+            if(shoot) launchSubsystem.shoot();
+            else launchSubsystem.stop();
+        }
+
+        pastButtonPress = currButtonPress;
     }
 
     @Override
