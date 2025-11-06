@@ -9,6 +9,8 @@ public class ShootCommand extends CommandBase {
     private final LaunchSubsystem launchSubsystem;
     private final Gamepad gamepad;
 
+    private boolean toSpin = false;
+
     public ShootCommand(LaunchSubsystem launchSubsystem, Gamepad gamepad) {
         this.launchSubsystem = launchSubsystem;
         this.gamepad = gamepad;
@@ -17,16 +19,15 @@ public class ShootCommand extends CommandBase {
 
     @Override
     public void execute() {
-        launchSubsystem.shoot();
+        toSpin = !toSpin;
+
+        if(toSpin) launchSubsystem.shoot();
+        else launchSubsystem.stop();
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        launchSubsystem.stop();
-    }
+//    @Override
+//    public void end(boolean interrupted) {
+//        launchSubsystem.stop();
+//    }
 
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
 }

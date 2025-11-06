@@ -47,11 +47,10 @@ public class teleop extends CommandOpMode {
         drive_subsystem.setDefaultCommand(new DriveCommand(drive_subsystem, gamepad1));
         intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem, gamepad2));
 
-        new GamepadButton(shooting_controller, GamepadKeys.Button.X)
+        new GamepadButton(shooting_controller)
                 .whenPressed(new BeltCommand(beltSubsystem, gamepad2));
-
+        //Maybe we should make this toggle as well.
         new GamepadButton(shooting_controller, GamepadKeys.Button.B)
                 .whenPressed(new ShootCommand(launchSubsystem,gamepad2));
     }
-
 }
