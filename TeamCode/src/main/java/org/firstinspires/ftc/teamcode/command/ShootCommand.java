@@ -25,9 +25,14 @@ public class ShootCommand extends CommandBase {
         else launchSubsystem.stop();
     }
 
-//    @Override
-//    public void end(boolean interrupted) {
-//        launchSubsystem.stop();
-//    }
+    @Override
+    public boolean isFinished() {
+        return false; // keeps checking for input
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        launchSubsystem.stop();
+    }
 
 }
