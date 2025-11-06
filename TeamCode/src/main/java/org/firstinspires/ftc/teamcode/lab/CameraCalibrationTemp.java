@@ -11,6 +11,8 @@ public class CameraCalibrationTemp extends LinearOpMode {
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
 
+    private ColorBallDetectionPipeline pipeline;
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Create AprilTag processor
@@ -44,6 +46,11 @@ public class CameraCalibrationTemp extends LinearOpMode {
                     telemetry.addData("Distance Z (m): ", z/1000);
                     telemetry.addData("Pitch in degrees (Rounded): ", Math.round(pitch));
                 }
+            }
+            for (ColorBallDetectionPipeline.BallData ball : pipeline.detectedBalls) {
+                telemetry.addData("%s Ball", ball.color);
+                telemetry.addData(" - Center", "(%.0f, %.0f)", ball.center.x, ball.center.y);
+                telemetry.addData(" - Region", ball.region);
             }
             telemetry.update();
         }
