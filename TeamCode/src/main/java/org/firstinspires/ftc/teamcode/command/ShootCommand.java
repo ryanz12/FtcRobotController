@@ -6,10 +6,15 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.subsystem.LaunchSubsystem;
 
 public class ShootCommand extends CommandBase {
+
     private final LaunchSubsystem launchSubsystem;
     private final Gamepad gamepad;
-    private boolean pastButtonPress = false;
-    private boolean shoot = false;
+
+    private boolean pastBPress = false;
+    private boolean pastAPress = false;
+
+    private boolean shootForward = false;
+    private boolean shootReverse = false;
 
     public ShootCommand(LaunchSubsystem launchSubsystem, Gamepad gamepad) {
         this.launchSubsystem = launchSubsystem;
@@ -19,25 +24,42 @@ public class ShootCommand extends CommandBase {
 
     @Override
     public void execute() {
-        boolean currButtonPress = gamepad.b;
+        boolean currBPress = gamepad.b;
+        boolean currAPress = gamepad.a;
 
-        if(currButtonPress && !pastButtonPress) {
-            shoot = !shoot;
-            if(shoot) launchSubsystem.shoot();
-            else launchSubsystem.stop();
+        // --- Toggle forward shooting with B ---
+        if (currBPress && !pastBPress) {
+            shootForward = !shootForward;
+            if (shootForward) {
+                shootReverse = false;  // stop reverse if active
+                launchSubsystem.shoot();
+            } else {
+                launchSubsystem.stop();
+            }
         }
 
-        pastButtonPress = currButtonPress;
+        // --- Toggle reverse shooting with A ---
+        if (currAPress && !pastAPress) {
+            shootReverse = !shootReverse;
+            if (shootReverse) {
+                shootForward = false;  // stop forward if active
+                launchSubsystem.reverseShoot();
+            } else {
+                launchSubsystem.stop();
+            }
+        }
+
+        pastBPress = currBPress;
+        pastAPress = currAPress;
     }
 
     @Override
     public boolean isFinished() {
-        return false; // keeps checking for input
+        return false; // continuously checks input
     }
 
     @Override
     public void end(boolean interrupted) {
         launchSubsystem.stop();
     }
-
 }

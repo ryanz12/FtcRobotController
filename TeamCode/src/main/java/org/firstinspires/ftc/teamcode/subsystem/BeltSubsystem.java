@@ -10,7 +10,7 @@ public class BeltSubsystem extends SubsystemBase {
 
     private String beltServoOneName = "beltServoOne";
     private String beltServoTwoName = "beltServoTwo";
-    
+
     public enum Direction {
         UTR, DTR
     }
@@ -19,7 +19,7 @@ public class BeltSubsystem extends SubsystemBase {
         belt_servo_one = hMap.get(CRServo.class, beltServoOneName);
         belt_servo_two = hMap.get(CRServo.class, beltServoTwoName);
     }
-    
+
     public void move_belt(Direction direction){
         belt_servo_one.setPower(direction == Direction.UTR ? 1 : -1);
         belt_servo_two.setPower(direction == Direction.UTR ? -1 : 1);

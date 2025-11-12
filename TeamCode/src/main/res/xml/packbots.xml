@@ -43,7 +43,7 @@
         serialNumber="(embedded)" parentModuleAddress="2">
         <!--control hub configurations-->
         <!--motors-->
-        
+
 
             <!--color sensor-->
 <!--        <RevColorSensorV3 name="[...]" port="0" bus="[...]" />-->
@@ -56,7 +56,7 @@
 <!--            <RevDistanceSensor name="[...]" port="1" bus="[...]" />-->
 <!--            <goBILDA5201SeriesMotor name="intakeMotor" port="0" />-->
             <goBILDA5202SeriesMotor name="launchMotor" port="0" />
-
+            <REV_VL53L0X_RANGE_SENSOR name="distanceSensor" port="0" bus="0" />
 <!--            <goBILDA5202SeriesMotor name="rotateMotor" port="2" />-->
 <!--            <goBILDA5201SeriesMotor name="specimenSlide" port="3" />-->
             <!-- **********************************************************
@@ -202,5 +202,5 @@
             <ContinuousRotationServo name="beltServoTwo" port="2"/>
         </LynxModule>
     </LynxUsbDevice>
-
+    <Webcam name="Webcam 1" serialNumber="A66E6480" />
 </Robot>

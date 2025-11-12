@@ -13,13 +13,15 @@ public class LaunchSubsystem extends SubsystemBase {
 
     public LaunchSubsystem(HardwareMap hwMap){
         launchMotor = hwMap.get(DcMotorEx.class, launchMotorName);
-        launchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //https://www.reddit.com/r/FTC/comments/lfl82f/whats_the_difference_between_setvelocity_and/
+        launchMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //https://www.reddit.com/r/FTC/comments/lfl82f/whats_the_difference_between_setvelocity_and/
         launchMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void shoot(){
-        launchMotor.setPower(1);
+        launchMotor.setPower(-0.75);
     }
+
+    public void reverseShoot (){launchMotor.setPower(-0.1);}
 
     public void stop(){
         launchMotor.setPower(0);
