@@ -18,6 +18,7 @@ public class LaunchSubsystem extends SubsystemBase {
         launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void shoot(){
+        //test
         launchMotor.setPower(1);
     }
 
