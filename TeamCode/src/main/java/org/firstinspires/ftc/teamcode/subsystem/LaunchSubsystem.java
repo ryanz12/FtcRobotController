@@ -18,7 +18,7 @@ public class LaunchSubsystem extends SubsystemBase {
         launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void shoot(){
-        launchMotor.setVelocity(1400);
+        launchMotor.setPower(0.6);
     }
 
     public void reverseShoot (){launchMotor.setPower(-0.1);}
