@@ -21,7 +21,7 @@ public class LaunchSubsystem extends SubsystemBase {
         launchMotor.setPower(0.6);
     }
 
-    public void reverseShoot (){launchMotor.setPower(-0.1);}
+    public void reverseShoot (){launchMotor.setPower(-1);}
 
     public void stop(){
         launchMotor.setPower(0);
