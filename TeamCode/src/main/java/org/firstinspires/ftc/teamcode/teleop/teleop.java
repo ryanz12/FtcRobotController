@@ -53,7 +53,7 @@ public class teleop extends CommandOpMode {
             @Override
             public void onOpened() {
                 telemetry.addLine("Camera opened.");
-                webcam.startStreaming(320, 240);
+                webcam.startStreaming(640, 480);
             }
             @Override
             public void onError(int errorCode) {
