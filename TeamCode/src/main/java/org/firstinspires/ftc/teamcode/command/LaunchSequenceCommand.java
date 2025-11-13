@@ -33,7 +33,7 @@ public class LaunchSequenceCommand extends CommandBase {
     private double lastKnownX = 0, lastKnownY = 0;
     private long lastDetectionTime = 0;
     private static final long DETECTION_TIMEOUT = 1500;
-    private int distanceUnder18Count = 0;
+    private int amountOfBalls = 0;
     private boolean ballPreviouslyDetected = false;
 
     private boolean bPreviouslyPressed = false;
@@ -140,7 +140,7 @@ public class LaunchSequenceCommand extends CommandBase {
 
             if (elapsed >= PAUSE_DURATION_MS) {
                 pauseActive = false;
-                distanceUnder18Count = 0;
+                amountOfBalls = 0;
                 ballPreviouslyDetected = false;
                 lastKnownX = 0;
                 lastKnownY = 0;
@@ -186,17 +186,17 @@ public class LaunchSequenceCommand extends CommandBase {
         // --- Distance & intake logic ---
         double distanceCm = distanceSensor.getDistance(DistanceUnit.CM);
         boolean ballDetected = distanceCm < 18.0;
-        if (ballDetected && !ballPreviouslyDetected) distanceUnder18Count++;
+        if (ballDetected && !ballPreviouslyDetected) amountOfBalls++;
         ballPreviouslyDetected = ballDetected;
 
-        boolean intakeRunning = distanceUnder18Count <= 2;
+        boolean intakeRunning = amountOfBalls <= 2;
         if (intakeRunning) intakeSubsystem.intake();
         else {
             intakeSubsystem.stop();
             beltSubsystem.stop();
         }
 
-        telemetry.addData("DistanceUnder18Count", distanceUnder18Count);
+        telemetry.addData("The amount of balls is ", amountOfBalls);
         telemetry.addData("Intake Running", intakeRunning);
 
         if (!intakeRunning) {
