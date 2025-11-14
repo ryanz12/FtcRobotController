@@ -5,81 +5,76 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import java.util.List;
-public class AprilTagDistance extends LinearOpMode{
+
+@TeleOp(name = "AprilTag ")
+public class AprilTagDistance extends LinearOpMode {
     private VisionPortal visionPortal;
-    private AprilTagProcessor aprilTagProcessor;
+    private AprilTagProcessor aprilTag;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.setMsTransmissionInterval(50);
 
-        // 1) prepare the AprilTag processor (easy defaults)
-        aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
-
-        // 2) build VisionPortal using the webcam named "Webcam 2"
-        //    (this is the hardwareMap name you set in the Robot Configuration)
-        WebcamName webcam = hardwareMap.get(WebcamName.class, "Webcam 2");
-
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(webcam)
-                .addProcessor(aprilTagProcessor)
-                // you can tweak resolution / stream format here if needed
-                .enableLiveView(false) // false recommended for competition to save bandwidth
+        // 1) Create a tag library with the correct size (6.5 inches = 16.51 cm = 0.1651 m)
+        double tagSizeMeters = 0.1651;
+        AprilTagLibrary tagLibrary = new AprilTagLibrary.Builder()
+                .addTag(
+                        1,                // your tag ID
+                        "MyTag",          // tag name (optional)
+                        tagSizeMeters,    // tag size in meters
+                        DistanceUnit.METER
+                )
                 .build();
 
-        // wait for camera to start streaming (optional, useful for debugging)
-        while (!isStopRequested() && visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("camera", "waiting to stream (%s)", visionPortal.getCameraState());
-            telemetry.update();
-            sleep(50);
-        }
+        // 2) Create AprilTag processor with this library
+        aprilTag = new AprilTagProcessor.Builder()
+                .setTagLibrary(tagLibrary)
+                .setDrawAxes(true)
+                .build();
 
-        telemetry.addLine("Ready - press Play");
-        telemetry.update();
+        // 3) Build VisionPortal with webcam "Webcam 2"
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
+                .addProcessor(aprilTag)
+                .enableLiveView(false)
+                .build();
+
         waitForStart();
 
-        // main loop: read detections and show pose / distance
-        while (!isStopRequested() && opModeIsActive()) {
-            List<AprilTagDetection> dets = aprilTagProcessor.getDetections();
+        // 4) Main loop: detect tags and print x/y/z and 3D distance in cm
+        while (opModeIsActive()) {
+            List<AprilTagDetection> detections = aprilTag.getDetections();
 
-            if (dets != null && dets.size() > 0) {
-                // process all detections (here we show the first one, but loop if you want)
-                AprilTagDetection d = dets.get(0);
+            if (detections != null && !detections.isEmpty()) {
+                for (AprilTagDetection detection : detections) {
+                    if (detection.ftcPose != null) {
+                        double xCm = detection.ftcPose.x * 100; // left/right
+                        double yCm = detection.ftcPose.y * 100; // up/down
+                        double zCm = detection.ftcPose.z * 100; // forward
 
-                telemetry.addData("tagId", d.id);
+                        double distanceCm = Math.sqrt(xCm*xCm + yCm*yCm + zCm*zCm);
 
-                // ftcPose may be null (pose estimation can fail) — check before use
-                if (d.ftcPose != null) {
-                    double x = d.ftcPose.x;   // left/right (metres) relative to camera
-                    double y = d.ftcPose.y;   // forward/back (metres) relative to camera
-                    double z = d.ftcPose.z;   // up/down (metres) relative to camera
-                    double roll = d.ftcPose.roll;
-                    double pitch = d.ftcPose.pitch;
-                    double yaw = d.ftcPose.yaw;
-
-                    // simple Euclidean range (distance) to tag center (metres)
-                    double range = Math.sqrt(x*x + y*y + z*z);
-
-                    telemetry.addData("pose", "x=%.3f y=%.3f z=%.3f", x, y, z);
-                    telemetry.addData("angles", "r=%.2f p=%.2f y=%.2f", roll, pitch, yaw);
-                    telemetry.addData("range", "%.3f m", range);
-                } else {
-                    telemetry.addLine("pose: <not available> (ftcPose == null)");
+                        telemetry.addData("Tag ID", detection.id);
+                        telemetry.addData("X (cm)", "%.1f", xCm);
+                        telemetry.addData("Y (cm)", "%.1f", yCm);
+                        telemetry.addData("Forward (cm)", "%.1f", zCm);
+                        telemetry.addData("3D Distance (cm)", "%.1f", distanceCm);
+                    }
                 }
             } else {
-                telemetry.addLine("no tags");
+                telemetry.addLine("No tags detected");
             }
 
             telemetry.update();
-            sleep(50);
         }
 
-        // cleanup
+        // 5) Cleanup
         visionPortal.stopStreaming();
         visionPortal.close();
     }
-
 }
