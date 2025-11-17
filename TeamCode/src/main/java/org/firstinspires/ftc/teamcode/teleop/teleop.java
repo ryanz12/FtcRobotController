@@ -53,7 +53,7 @@ public class teleop extends CommandOpMode {
             @Override
             public void onOpened() {
                 telemetry.addLine("Camera opened.");
-                webcam.startStreaming(640, 480);
+                webcam.startStreaming(640, 360);
             }
             @Override
             public void onError(int errorCode) {
@@ -75,29 +75,27 @@ public class teleop extends CommandOpMode {
         drive_subsystem.setDefaultCommand(new DriveCommand(drive_subsystem, gamepad1));
         intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem, shooting_controller));
 
-        // ---- Toggle Belt Controls ---- //
+        // ---- Hold-to-Move Belt Controls (with state tracking) ---- //
         new GamepadButton(shooting_controller, GamepadKeys.Button.X)
-                .whenPressed(() -> {
-                    if (beltMovingUp) {
-                        beltSubsystem.stop();
-                        beltMovingUp = false;
-                    } else {
-                        beltSubsystem.move_belt(BeltSubsystem.Direction.UTR);
-                        beltMovingUp = true;
-                        beltMovingDown = false;
-                    }
+                .whileHeld(() -> {
+                    beltSubsystem.move_belt(BeltSubsystem.Direction.UTR);
+                    beltMovingUp = true;
+                    beltMovingDown = false;
+                })
+                .whenReleased(() -> {
+                    beltSubsystem.stop();
+                    beltMovingUp = false;
                 });
 
         new GamepadButton(shooting_controller, GamepadKeys.Button.Y)
-                .whenPressed(() -> {
-                    if (beltMovingDown) {
-                        beltSubsystem.stop();
-                        beltMovingDown = false;
-                    } else {
-                        beltSubsystem.move_belt(BeltSubsystem.Direction.DTR);
-                        beltMovingDown = true;
-                        beltMovingUp = false;
-                    }
+                .whileHeld(() -> {
+                    beltSubsystem.move_belt(BeltSubsystem.Direction.DTR);
+                    beltMovingDown = true;
+                    beltMovingUp = false;
+                })
+                .whenReleased(() -> {
+                    beltSubsystem.stop();
+                    beltMovingDown = false;
                 });
 
         // ---- Shooting ----
