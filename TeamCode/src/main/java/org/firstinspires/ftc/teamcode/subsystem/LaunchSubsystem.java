@@ -17,8 +17,8 @@ public class LaunchSubsystem extends SubsystemBase {
         launchMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-    public void shoot(){
-        launchMotor.setPower(0.6);
+    public void shoot(double power){
+        launchMotor.setPower(power);
     }
 
     public void reverseShoot (){launchMotor.setPower(-1);}

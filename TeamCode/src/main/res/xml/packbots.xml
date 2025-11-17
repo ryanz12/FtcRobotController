@@ -192,7 +192,6 @@
         <LynxModule name="Control Hub" port="2">
             <!-- The built-in IMU is always port="0" bus="0" -->
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
-            <ContinuousRotationServo name="intakeServo" port="5" />
             <goBILDA5201SeriesMotor name="leftFront" port="0" />
             <goBILDA5201SeriesMotor name="rightFront" port="1" />
             <goBILDA5202SeriesMotor name="leftBack" port="2" />
@@ -203,5 +202,5 @@
         </LynxModule>
     </LynxUsbDevice>
     <Webcam name="Webcam 1" serialNumber="A66E6480" />
-    <Webcam name="Webcam 2" serialNumber="8AC1VF60" />
+    <Webcam name="Webcam 2" serialNumber="8AC1BF60" />
 </Robot>
