@@ -44,19 +44,8 @@ public class LaunchSequenceCommand extends CommandBase {
     private static final long PAUSE_DURATION_MS = 3000;
     private boolean viewportPaused = false;
     private boolean waitingForFirstFrameAfterPause = false;
-    //Target Ramp Values
     private static final double FIRST_BALL_X_TARGET = 530.0;
     private static final double FIRST_BALL_Y_TARGET = 330.0;
-
-    // ---- Distance Sensor Filtering ----
-    private static final double TRIGGER_ON = 15.0;
-    private static final double TRIGGER_OFF = 22.0;
-    private int detectStableCount = 0;
-    private int clearStableCount = 0;
-    private boolean filteredBallDetected = false;
-    private double lastDistance =30.0;
-
-
 
     private enum State {
         WAITING_FOR_BALL,
@@ -105,24 +94,6 @@ public class LaunchSequenceCommand extends CommandBase {
         telemetry.addLine("LaunchSequenceCommand initialized");
         telemetry.update();
     }
-    // ---- Median Filter (5 samples) ----
-    private double getMedianDistance() {
-        double[] samples = new double[5];
-        for (int i = 0; i < 5; i++) {
-            samples[i] = distanceSensor.getDistance(DistanceUnit.CM);
-        }
-        java.util.Arrays.sort(samples);
-        return samples[2]; // median
-    }
-
-    // ---- Reject Impossible Jumps ----
-    private double rejectJump(double curr) {
-        if (Math.abs(curr - lastDistance) > 40) {  // 40 cm is safe for REV ToF
-            return lastDistance;                   // ignore spike
-        }
-        lastDistance = curr;
-        return curr;
-    }
 
     @Override
     public void execute() {
@@ -140,7 +111,6 @@ public class LaunchSequenceCommand extends CommandBase {
             bPreviouslyPressed = bPressed;
             return;
         }
-
 
         // --- Detect B → Hold Y pause sequence ---
         if (!pauseActive) {
@@ -228,34 +198,12 @@ public class LaunchSequenceCommand extends CommandBase {
             return;
         }
 
-        // ---- FILTER PIPELINE ----
-        double raw = getMedianDistance();
-        double distanceCm = rejectJump(raw);
+        // --- BALL COUNT VIA DISTANCE SENSOR ---
+        double distanceCm = distanceSensor.getDistance(DistanceUnit.CM);
+        boolean ballDetected = distanceCm < 18.0;
 
-        // ---- DEBOUNCE + HYSTERESIS ----
-        if (!filteredBallDetected && distanceCm < TRIGGER_ON) {
-            detectStableCount++;
-            clearStableCount = 0;
-
-            if (detectStableCount >= 3) {    // 3 consecutive frames to trigger
-                filteredBallDetected = true;
-            }
-
-        } else if (filteredBallDetected && distanceCm > TRIGGER_OFF) {
-            clearStableCount++;
-            detectStableCount = 0;
-
-            if (clearStableCount >= 3) {     // 3 consecutive frames to clear
-                filteredBallDetected = false;
-            }
-        }
-
-        // ---- COUNT ON CLEAN RISING EDGE ----
-        if (filteredBallDetected && !ballPreviouslyDetected) {
-            amountOfBalls++;
-        }
-
-        ballPreviouslyDetected = filteredBallDetected;
+        if (ballDetected && !ballPreviouslyDetected) amountOfBalls++;
+        ballPreviouslyDetected = ballDetected;
 
         boolean intakeRunning = amountOfBalls <= 2;
 

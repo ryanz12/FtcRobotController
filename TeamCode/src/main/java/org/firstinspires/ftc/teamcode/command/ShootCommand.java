@@ -32,7 +32,7 @@ public class ShootCommand extends CommandBase {
             shootForward = !shootForward;
             if (shootForward) {
                 shootReverse = false;  // stop reverse if active
-                launchSubsystem.shoot(.6);
+                launchSubsystem.shoot(0.6);
             } else {
                 launchSubsystem.stop();
             }

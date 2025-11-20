@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.command.BeltCommand;
 import org.firstinspires.ftc.teamcode.command.DriveCommand;
 import org.firstinspires.ftc.teamcode.command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.command.LaunchSequenceCommand;
@@ -109,10 +108,10 @@ public class teleop extends CommandOpMode {
                 distanceSensor,
                 webcam,
                 pipeline,
-                () -> shooting_controller.getButton(GamepadKeys.Button.LEFT_BUMPER), // RB
+                () -> shooting_controller.getButton(GamepadKeys.Button.LEFT_BUMPER),
                 () -> gamepad2.b,
                 () -> gamepad2.y,
-                () -> beltMovingUp || beltMovingDown, // manual override
+                () -> beltMovingUp || beltMovingDown,
                 telemetry
         ));
     }
