@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.subsystem.BeltSubsystem;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name = "BallTestOpMode", group = "test")
 public class PurpleBallDetectionOpMode extends LinearOpMode {
 
     private OpenCvWebcam webcam;
