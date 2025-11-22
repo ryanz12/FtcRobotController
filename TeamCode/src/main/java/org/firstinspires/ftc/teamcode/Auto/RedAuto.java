@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-@Autonomous(name = "Auto")
+@Autonomous(name = "Auto",group = "Left")
 public class RedAuto extends LinearOpMode {
     private DcMotor shootMotor;
     private CRServo rampServoOne;
@@ -32,7 +32,7 @@ public class RedAuto extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap,beginPos);
 
         waitForStart();
-        //This is purely to test whether auto i working
+        //This is purely to test whether auto is working
         Action path = drive.actionBuilder(beginPos)
                 .lineToY(-15)
                 .turn(20)
