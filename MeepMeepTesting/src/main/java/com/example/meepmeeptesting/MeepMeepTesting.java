@@ -6,6 +6,12 @@ import org.rowlandhall.meepmeep.MeepMeep;
 import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
 import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
@@ -23,11 +29,13 @@ public class MeepMeepTesting {
                         .forward(30)
                         .turn(Math.toRadians(90))
                         .build());
+        Image img = null;
+        //This is the absolute path/ THE ONLY PATH THAT WORKS idk gg gang 😭
+        try { img = ImageIO.read(new File("C:/Users/Owner/Downloads/field-2025-official.png")); }
+        catch(IOException e) {}
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_OFFICIAL)
-                .setDarkMode(true)
-                .setBackgroundAlpha(0.95f)
-                .addEntity(myBot)
-                .start();
+        meepMeep.setBackground(img)
+                .addEntity(myBot);
+        meepMeep.start();
     }
 }
