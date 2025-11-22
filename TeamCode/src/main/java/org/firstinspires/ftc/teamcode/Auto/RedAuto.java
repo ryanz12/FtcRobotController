@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Autonomous(name = "AutoRed",group = "Left")
+//
 public class RedAuto extends LinearOpMode {
     private DcMotor shootMotor;
     private CRServo rampServoOne;
