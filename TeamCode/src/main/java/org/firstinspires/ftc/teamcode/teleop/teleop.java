@@ -126,12 +126,12 @@ public class teleop extends CommandOpMode {
         ));
 
         // =======================================================
-        //                AprilTag Track Toggle (RB)
+        //                AprilTag Track Toggle (X)
         // =======================================================
 
         TrackCommand trackCommand = new TrackCommand(cameraSubsystem, drive_subsystem, telemetry);
 
-        new GamepadButton(drive_controller, GamepadKeys.Button.RIGHT_BUMPER)
+        new GamepadButton(drive_controller, GamepadKeys.Button.X)
                 .toggleWhenPressed(trackCommand);
     }
 }

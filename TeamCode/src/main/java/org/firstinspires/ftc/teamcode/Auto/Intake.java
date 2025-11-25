@@ -24,6 +24,6 @@ public class Intake implements Action {
         }
         intakeServo.setPower(direction == 1 ? 1 : -0.5);
 
-        return timer.seconds() < 1 ? true : false;
+        return timer.seconds() < 4 ? true : false;
     }
 }

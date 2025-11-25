@@ -28,7 +28,7 @@ public class TrackCommand extends CommandBase {
 
     @Override
     public void execute(){
-        // Is it gonna be more efficient to close it everytime I toggle or pause it and background run? nvm I dont think it closes
+        // Is it gonna be more efficient to close it everytime I toggle or pause it and background run
         // +ve need to go right, -ve need to go left
         List<Double> cameraData = cameraSubsystem.getCameraData();
 
@@ -42,10 +42,10 @@ public class TrackCommand extends CommandBase {
             range = cameraData.get(1);
         }
 
-        if (x > 2){
+        if (x > 5){
             turn = -0.2;
         }
-        else if (x < -2){
+        else if (x < -5){
             turn = 0.2;
         }
         else {

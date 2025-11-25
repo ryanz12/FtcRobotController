@@ -1,27 +1,25 @@
 package org.firstinspires.ftc.teamcode.Auto;
+
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-@Autonomous(name = "AutoRed",group = "Left")
-//
-public class RedAuto extends LinearOpMode {
+
+public class ActionTest extends LinearOpMode {
     private DcMotor shootMotor;
     private CRServo rampServoOne;
     private CRServo rampServoTwo;
 
     private CRServo intakeServo;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,23 +36,12 @@ public class RedAuto extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap,beginPos);
 
         waitForStart();
-        //This is purely to test whether auto is working
-        Action path = drive.actionBuilder(beginPos)
-                .lineToX(53)
-                .turn(Math.toRadians(90))
+        Action action = drive.actionBuilder(beginPos)
                 .stopAndAdd(new SequentialAction(
                         new Outake(shootMotor,true),
-                        new Ramp(rampServoOne,rampServoTwo, Ramp.Direction.UP)
-                ))
-                .strafeTo(new Vector2d(-12,-12))
-                .turn(Math.toRadians(180))
-                .stopAndAdd(new ParallelAction(
                         new Intake(intakeServo,1),
                         new Ramp(rampServoOne,rampServoTwo, Ramp.Direction.UP)
                 ))
-                .lineToY(-40)
                 .build();
-        Actions.runBlocking(new SequentialAction(path));
-
     }
 }

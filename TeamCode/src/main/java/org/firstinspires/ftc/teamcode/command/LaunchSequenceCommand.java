@@ -257,7 +257,7 @@ public class LaunchSequenceCommand extends CommandBase {
                 if ((lastKnownX < FIRST_BALL_X_TARGET || lastKnownY < FIRST_BALL_Y_TARGET)
                         && (currentTime - lastDetectionTime <= DETECTION_TIMEOUT)) {
 
-                    beltSubsystem.move_belt(BeltSubsystem.Direction.DTR);
+                    beltSubsystem.move_belt(BeltSubsystem.Direction.UTR);
 
                 } else {
 
