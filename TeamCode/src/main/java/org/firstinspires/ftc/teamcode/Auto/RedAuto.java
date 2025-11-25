@@ -41,17 +41,10 @@ public class RedAuto extends LinearOpMode {
         //This is purely to test whether auto is working
         Action path = drive.actionBuilder(beginPos)
                 .lineToX(53)
+                .waitSeconds(2)
                 .turn(Math.toRadians(90))
-                .stopAndAdd(new SequentialAction(
-                        new Outake(shootMotor,true),
-                        new Ramp(rampServoOne,rampServoTwo, Ramp.Direction.UP)
-                ))
                 .strafeTo(new Vector2d(-12,-12))
                 .turn(Math.toRadians(180))
-                .stopAndAdd(new ParallelAction(
-                        new Intake(intakeServo,1),
-                        new Ramp(rampServoOne,rampServoTwo, Ramp.Direction.UP)
-                ))
                 .lineToY(-40)
                 .build();
         Actions.runBlocking(new SequentialAction(path));
