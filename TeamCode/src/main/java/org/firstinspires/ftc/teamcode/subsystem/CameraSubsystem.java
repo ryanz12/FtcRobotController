@@ -18,6 +18,7 @@ import java.util.List;
 
 public class CameraSubsystem extends SubsystemBase {
     private AprilTagProcessor aprilTag;
+
     private VisionPortal visionPortal;
 
     public CameraSubsystem(HardwareMap hMap, Telemetry telemetry){
@@ -27,22 +28,22 @@ public class CameraSubsystem extends SubsystemBase {
                 .build();
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
+
         builder.setCamera(hMap.get(WebcamName.class, "Webcam 2"));
         builder.setCameraResolution(new Size(640, 480));
-
-        // Disable the RC preview
-        builder.enableLiveView(false);
-
         builder.addProcessor(aprilTag);
+
         visionPortal = builder.build();
     }
 
     public List<Double> getCameraData(){
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+
         if (!currentDetections.isEmpty()){
             AprilTagDetection detection = currentDetections.get(0);
             return Arrays.asList(detection.ftcPose.x, detection.ftcPose.range);
         }
+
         return null;
     }
 
