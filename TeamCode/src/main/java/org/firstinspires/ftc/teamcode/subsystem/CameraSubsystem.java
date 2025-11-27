@@ -59,7 +59,4 @@ public class CameraSubsystem extends SubsystemBase {
         visionPortal.setProcessorEnabled(aprilTag, false);
     }
 
-    public void close(){
-        visionPortal.close();
-    }
 }

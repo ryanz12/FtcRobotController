@@ -45,11 +45,8 @@ public class teleop extends CommandOpMode {
     public void initialize() {
 
         // ----- Ball Detection Camera (Webcam 1) -----
-        int cameraMonitorViewId = hardwareMap.appContext.getResources()
-                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
         webcam = OpenCvCameraFactory.getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
 
         pipeline = new PurpleBallPipeline(telemetry);
         webcam.setPipeline(pipeline);

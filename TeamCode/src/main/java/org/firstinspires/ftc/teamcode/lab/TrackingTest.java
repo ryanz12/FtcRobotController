@@ -37,8 +37,5 @@ public class TrackingTest extends CommandOpMode {
 
     }
 
-    @Override
-    public void reset(){
-        cameraSubsystem.close();
-    }
+
 }
