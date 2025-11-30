@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -18,89 +17,127 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
 @Autonomous
 public class BlueAutoFar extends LinearOpMode {
-
     private class Launcher {
         private DcMotorEx launchMotor;
+        private VoltageSensor voltageSensor;
         private ElapsedTime timer;
 
-        // Initialize
+        // PID variables
+        private double error, error_sum, prev_error, delta_error, delta_time;
+        private double output;
+        private double last_time;
+
+        // PID constants
+        private double kP = 0.002;
+        private double kI = 0;
+        private double kD = 0.01;
+        private double kF = 0.0004167;
+        private double voltage_constant = 0.95;
+        private double voltage_reference = 13.0;
+
+        public double target_velocity = -1300;
+
         public Launcher(HardwareMap hwMap){
-            launchMotor = hwMap.get(DcMotorEx.class, "launchMotor");
+            launchMotor = hardwareMap.get(DcMotorEx.class, "launchMotor");
+            launchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             launchMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            launchMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+            voltageSensor = hwMap.get(VoltageSensor.class, "Control Hub");
             timer = new ElapsedTime();
         }
 
+        private double computeOutput(double target){
+            double current_velocity = launchMotor.getVelocity();
+            double voltage = voltageSensor.getVoltage();
 
-//         Get some action going
-        public Action shoot(double target) {
-            return new Action(){
+            double now = timer.seconds();
+            delta_time = (now - last_time > 0) ? now - last_time : 1e-3;
+
+            error = target - current_velocity;
+            error_sum += error * delta_time;
+            delta_error = (error - prev_error) / delta_time;
+
+            double ffv = kF * target * (voltage_reference / voltage) * voltage_constant;
+
+            output = ffv + (kP * error) + (kI * error_sum) + (kD * delta_error);
+
+            prev_error = error;
+            last_time = now;
+
+            return output;
+        }
+
+        public Action shoot(double target){
+            return new Action() {
                 private boolean initialized = false;
 
                 @Override
-                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                    if (!initialized){
-                        launchMotor.setPower(1);
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    if(!initialized){
+                        timer.reset();
+                        last_time = timer.seconds();
                         initialized = true;
                     }
 
-                    // * Gets the velocity in ticks/second
-                    double vel = launchMotor.getVelocity();
-                    telemetryPacket.put("velocity", vel);
+                    double power = computeOutput(target);
+                    launchMotor.setPower(Math.max(-1, Math.min(1, power))); // clamp to [-1, 1]
 
-                    if (vel < target){
-                        launchMotor.setPower(0);
-                        return false;
-                    }
+                    double currentVel = launchMotor.getVelocity();
+                    packet.put("PID target", target);
+                    packet.put("PID velocity", currentVel);
+                    packet.put("PID output", power);
 
-                    return true;
+                    // Shooter is ready when within 10 ticks/sec
+                    return Math.abs(target - currentVel) > 10;
                 }
             };
         }
-
-        public Action breakLauncher() {
-            return new Action() {
-                @Override
-                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                    return false;
-                }
-            };
-        }
-
 
         public Action spin(){
             return new Action() {
                 private boolean initialized = false;
 
                 @Override
-                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                    if (!initialized){
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    if(!initialized){
                         timer.reset();
-                        launchMotor.setPower(0.74);
+                        last_time = timer.seconds();
                         initialized = true;
                     }
 
-                    double vel = launchMotor.getVelocity();
-                    telemetryPacket.put("velocity", vel);
+                    double power = computeOutput(target_velocity);
+                    launchMotor.setPower(Math.max(-1, Math.min(1, power)));
 
-                    if (timer.seconds() > 4.0){
+                    double currentVel = launchMotor.getVelocity();
+                    packet.put("PID target", target_velocity);
+                    packet.put("PID velocity", currentVel);
+                    packet.put("PID output", power);
+
+                    if(timer.seconds() > 4.0){
                         launchMotor.setPower(0);
                         return false;
                     }
-
                     return true;
                 }
             };
         }
 
+        public Action breakLauncher(){
+            return packet -> {
+                launchMotor.setPower(0);
+                return false;
+            };
+        }
     }
+
 
     private class Ramp {
         private CRServo rampServoOne, rampServoTwo;
@@ -109,7 +146,6 @@ public class BlueAutoFar extends LinearOpMode {
         public Ramp(HardwareMap hwMap){
             rampServoOne = hwMap.get(CRServo.class, "beltServoOne");
             rampServoTwo = hwMap.get(CRServo.class, "beltServoTwo");
-
             timer = new ElapsedTime();
         }
 
@@ -201,24 +237,24 @@ public class BlueAutoFar extends LinearOpMode {
         if (isStopRequested()) return;
 
         Actions.runBlocking(new SequentialAction(
-                    launcher.shoot(-1475.0),
-                    new ParallelAction(
-                            launcher.spin(),
-                            ramp.rampUp(4, 1),
-                            intake.roll(4)
-                    ),
-                    new ParallelAction(
-                            phase1,
-                            intake.roll(8),
-                            ramp.rampUp(8, 0.5)
-                    ),
-                    phase2,
-                    launcher.shoot(-1400),
-                    new ParallelAction(
-                            launcher.spin(),
-                            ramp.rampUp(4, 1),
-                            intake.roll(4)
-                    )
+                launcher.shoot(-1475.0),
+                new ParallelAction(
+                        launcher.spin(),
+                        ramp.rampUp(4, 1),
+                        intake.roll(4)
+                ),
+                new ParallelAction(
+                        phase1,
+                        intake.roll(8),
+                        ramp.rampUp(8, 0.5)
+                ),
+                phase2,
+                launcher.shoot(-1400),
+                new ParallelAction(
+                        launcher.spin(),
+                        ramp.rampUp(4, 1),
+                        intake.roll(4)
+                )
         ));
     }
 }
