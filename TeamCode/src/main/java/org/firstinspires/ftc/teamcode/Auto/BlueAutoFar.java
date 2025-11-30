@@ -83,7 +83,7 @@ public class BlueAutoFar extends LinearOpMode {
                 public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                     if (!initialized){
                         timer.reset();
-                        launchMotor.setPower(0.72);
+                        launchMotor.setPower(0.74);
                         initialized = true;
                     }
 
@@ -193,7 +193,7 @@ public class BlueAutoFar extends LinearOpMode {
 
         Action phase2 = drive.actionBuilder(new Pose2d(36.1, 60.8, Math.toRadians(270)))
                 .strafeTo(new Vector2d(59.8, 10.4))
-                .turn(Math.toRadians(-120))
+                .turn(Math.toRadians(-118))
                 .build();
 
         waitForStart();
