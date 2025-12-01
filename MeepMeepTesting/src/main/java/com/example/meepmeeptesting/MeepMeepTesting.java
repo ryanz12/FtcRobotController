@@ -20,16 +20,16 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(61.5, 12.5, Math.toRadians(180)))
-                        .strafeTo(new Vector2d(58, 12.5))
-                        .turn(Math.toRadians(-20))
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(61.5, -12.5, Math.toRadians(-180)))
+                        .strafeTo(new Vector2d(58, -12.5))
+                        .turn(Math.toRadians(20))
                         .waitSeconds(1)
-                        .turn(Math.toRadians(110)) //turn to 270 deg
-                        .strafeTo(new Vector2d(36, 29))
-                        .strafeTo(new Vector2d(36, 62.5))
+                        .turn(Math.toRadians(-110)) //turn to 270 deg
+                        .strafeTo(new Vector2d(36, -29))
+                        .strafeTo(new Vector2d(36, -62.5))
                         .waitSeconds(1)
-                        .strafeTo(new Vector2d(52, 14))
-                        .turn(Math.toRadians(-110))
+                        .strafeTo(new Vector2d(52, -14))
+                        .turn(Math.toRadians(110))
                         .waitSeconds(4)
                         .build());
         Image img = null;
