@@ -194,24 +194,29 @@ public class RedAutoFar extends LinearOpMode {
 
         Action phase1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(58, 12.5))
-                .turn(Math.toRadians(-20))
+                .turn(Math.toRadians(-25))
+                .waitSeconds(0.5)
                 .stopAndAdd(
                         new ParallelAction(
-                                ramp.rampUp(5, 1),
-                                intake.roll(5)
+                                ramp.rampUp(6, 1),
+                                intake.roll(6)
                         )
                 )
                 .build();
 
-        Action phase2 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(160)))
-                .turn(Math.toRadians(110)) //turn to 270 deg
-                .strafeTo(new Vector2d(36, 29))
-                .strafeTo(new Vector2d(52, 14))
-                .strafeTo(new Vector2d(36, 62.5))
+        Action phase2 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(155)))
+                .turn(Math.toRadians(115)) //turn to 270 deg
+                .strafeTo(new Vector2d(31, 29))
+                .strafeTo(new Vector2d(31, 63.5))
                 .build();
 
-        Action phase3 = drive.actionBuilder(new Pose2d(36, 62.5, Math.toRadians(270)))
-                .turn(Math.toRadians(-110))
+        Action phase3 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(270)))
+                .strafeTo(new Vector2d(52, 22))
+                .build();
+
+        Action phase4 = drive.actionBuilder(new Pose2d(52, 22, Math.toRadians(270)))
+                .turn(Math.toRadians(-120))
+                .waitSeconds(1)
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(7, 1),
@@ -227,15 +232,17 @@ public class RedAutoFar extends LinearOpMode {
         Actions.runBlocking(new SequentialAction(
                 new ParallelAction(
                         phase1,
-                        launcher.shoot(-1600, 8)
+                        launcher.shoot(-1650, 7)
                 ),
                 new ParallelAction(
                         phase2,
-                        intake.roll(10)
+                        intake.roll(7),
+                        ramp.rampUp(5, 0.2)
                 ),
+                phase3,
                 new ParallelAction(
-                        phase3,
-                        launcher.shoot(-1600, 7)
+                        phase4,
+                        launcher.shoot(-1500, 7)
                 )
             )
         );

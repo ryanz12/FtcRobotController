@@ -22,16 +22,31 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(61.5, -12.5, Math.toRadians(-180)))
                         .strafeTo(new Vector2d(58, -12.5))
-                        .turn(Math.toRadians(20))
-                        .waitSeconds(1)
-                        .turn(Math.toRadians(-110)) //turn to 270 deg
-                        .strafeTo(new Vector2d(36, -29))
-                        .strafeTo(new Vector2d(36, -62.5))
-                        .waitSeconds(1)
-                        .strafeTo(new Vector2d(52, -14))
-                        .turn(Math.toRadians(110))
-                        .waitSeconds(4)
+                        .turn(Math.toRadians(25))
+                        .turn(Math.toRadians(-115)) //turn to 270 deg
+                        .strafeTo(new Vector2d(31, -29))
+                        .strafeTo(new Vector2d(31, -63.5))
+                        .strafeTo(new Vector2d(52, -22))
+                        .turn(Math.toRadians(120))
+//                        .waitSeconds(3)
+//                        .strafeTo(new Vector2d(-11.5, 12.5))
+//                        .waitSeconds(1)
+//                        .turn(Math.toRadians(135))
+//                        .waitSeconds(1)
+//                        .strafeTo(new Vector2d(-11.5, 62.5))
+//                        .waitSeconds(1)
+//                        .strafeTo(new Vector2d(-11.5, 12.5))
+//                        .turn(Math.toRadians(-135))
+//                        .waitSeconds(1)
+//                        .turn(Math.toRadians(135))
+//                        .strafeTo(new Vector2d(12, 28))
+//                        .strafeTo(new Vector2d(12, 62.5))
+//                        .strafeTo(new Vector2d(-11.5, 12.5))
+//                        .turn(Math.toRadians(-135))
+//                        .strafeTo(new Vector2d(0, 48))
+//                        .waitSeconds(1)
                         .build());
+
         Image img = null;
 
         //This is the absolute path/ THE ONLY PATH THAT WORKS idk gg gang 😭

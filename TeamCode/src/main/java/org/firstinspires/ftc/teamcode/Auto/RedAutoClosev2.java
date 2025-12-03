@@ -8,8 +8,8 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
 @Autonomous
-public class BlueAutoFar extends LinearOpMode {
+public class RedAutoClosev2 extends LinearOpMode {
 
     private class Launcher {
         private DcMotorEx launch_motor;
@@ -183,44 +183,75 @@ public class BlueAutoFar extends LinearOpMode {
     private MecanumDrive drive;
     private Pose2d initialPose;
 
+
     @Override
     public void runOpMode(){
         Launcher launcher = new Launcher(hardwareMap);
         Ramp ramp = new Ramp(hardwareMap);
         Intake intake = new Intake(hardwareMap);
 
-        initialPose = new Pose2d(61.5, 12.5, Math.toRadians(-180));
+        initialPose = new Pose2d(-50, 50, Math.toRadians(135));
         drive = new MecanumDrive(hardwareMap, initialPose);
 
+        // Drive to shooting pose
         Action phase1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(58, -12.5))
-                .turn(Math.toRadians(25))
-                .waitSeconds(0.5)
+                .strafeTo(new Vector2d(-11.5, 12.5))
+                .build();
+
+        Action phase2 = drive.actionBuilder(new Pose2d(-11.5, 12.5, Math.toRadians(135)))
+                .waitSeconds(2)
                 .stopAndAdd(
                         new ParallelAction(
-                                ramp.rampUp(6, 1),
-                                intake.roll(6)
+                                ramp.rampUp(4, 1),
+                                intake.roll(4)
                         )
                 )
                 .build();
 
-        Action phase2 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(-155)))
-                .turn(Math.toRadians(-115)) //turn to 270 deg
-                .strafeTo(new Vector2d(31, -29))
-                .strafeTo(new Vector2d(31, -63.5))
+
+        // Drive to pick up balls
+        Action phase3 = drive.actionBuilder(new Pose2d(-11.5, 12.5, Math.toRadians(135)))
+                .turn(Math.toRadians(135))
+                .strafeTo(new Vector2d(-11.5, 62.5))
                 .build();
 
-        Action phase3 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(-270)))
-                .strafeTo(new Vector2d(52, -22))
+        Action phase4 = drive.actionBuilder(new Pose2d(-11.5, 62.5, Math.toRadians(270)))
+                .strafeTo(new Vector2d(-11.5, 12.5))
                 .build();
 
-        Action phase4 = drive.actionBuilder(new Pose2d(52, 22, Math.toRadians(-270)))
-                .turn(Math.toRadians(120))
-                .waitSeconds(1)
+
+        // Rotate then shoot
+        Action phase5 = drive.actionBuilder(new Pose2d(-11.5, 12.5, Math.toRadians(270)))
+                .turn(Math.toRadians(-135))
+                .build();
+
+        Action phase6 = drive.actionBuilder(new Pose2d(-11.5, 12.5, Math.toRadians(135)))
+                .waitSeconds(2)
                 .stopAndAdd(
                         new ParallelAction(
-                                ramp.rampUp(7, 1),
-                                intake.roll(7)
+                                ramp.rampUp(4, 1),
+                                intake.roll(4)
+                        )
+                )
+                .build();
+
+        Action phase7 = drive.actionBuilder(new Pose2d(-11.5, 12.5, Math.toRadians(135)))
+                .turn(Math.toRadians(135))
+                .strafeTo(new Vector2d(12, 28))
+                .strafeTo(new Vector2d(12, 62.5))
+                .build();
+
+        Action phase8 = drive.actionBuilder(new Pose2d(12, 62.5, Math.toRadians(270)))
+                .strafeTo(new Vector2d(-11.5, 12.5))
+                .turn(Math.toRadians(-135))
+                .build();
+
+        Action phase9 = drive.actionBuilder(new Pose2d(-11.5, 12.5, Math.toRadians(-135)))
+                .waitSeconds(2)
+                .stopAndAdd(
+                        new ParallelAction(
+                                ramp.rampUp(2, 1),
+                                intake.roll(2)
                         )
                 )
                 .build();
@@ -230,22 +261,35 @@ public class BlueAutoFar extends LinearOpMode {
         if (isStopRequested()) return;
 
         Actions.runBlocking(new SequentialAction(
-                        new ParallelAction(
-                                phase1,
-                                launcher.shoot(-1650, 7)
-                        ),
-                        new ParallelAction(
-                                phase2,
-                                intake.roll(7),
-                                ramp.rampUp(5, 0.2)
-                        ),
+                new ParallelAction(
+                        phase1,
+                        phase2,
+                        launcher.shoot(-1200, 6)
+                ),
+                new ParallelAction(
                         phase3,
-                        new ParallelAction(
-                                phase4,
-                                launcher.shoot(-1500, 7)
-                        )
+                        ramp.rampUp(5, 0.5),
+                        intake.roll(5)
+                ),
+                phase4,
+                new ParallelAction(
+                        phase5,
+                        phase6,
+                        launcher.shoot(-1200, 6)
+                ),
+                new ParallelAction(
+                        phase7,
+                        ramp.rampUp(5, 0.5),
+                        intake.roll(5)
+                ),
+                phase8,
+                new ParallelAction(
+                        launcher.shoot(-1200, 4),
+                        phase9
                 )
+
+            )
         );
+
     }
 }
-
