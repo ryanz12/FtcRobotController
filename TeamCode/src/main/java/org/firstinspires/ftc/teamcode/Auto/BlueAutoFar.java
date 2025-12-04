@@ -149,22 +149,22 @@ public class BlueAutoFar extends LinearOpMode {
     }
 
     private class Intake {
-        private CRServo intakeServo;
+        private DcMotorEx intakeServo;
         private ElapsedTime timer;
 
         public Intake(HardwareMap hwMap){
-            intakeServo = hwMap.get(CRServo.class, "intakeServo");
+            intakeServo = hwMap.get(DcMotorEx.class, "intakeServo");
             timer = new ElapsedTime();
         }
 
-        public Action roll(double seconds){
+        public Action roll(double seconds, double power){
             return new Action() {
                 private boolean initialized = false;
 
                 @Override
                 public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                     if (!initialized){
-                        intakeServo.setPower(-1);
+                        intakeServo.setPower(-power);
                         initialized = true;
                         timer.reset();
                     }
@@ -189,7 +189,7 @@ public class BlueAutoFar extends LinearOpMode {
         Ramp ramp = new Ramp(hardwareMap);
         Intake intake = new Intake(hardwareMap);
 
-        initialPose = new Pose2d(61.5, 12.5, Math.toRadians(-180));
+        initialPose = new Pose2d(61.5, -12.5, Math.toRadians(-180));
         drive = new MecanumDrive(hardwareMap, initialPose);
 
         Action phase1 = drive.actionBuilder(initialPose)
@@ -199,28 +199,28 @@ public class BlueAutoFar extends LinearOpMode {
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(6, 1),
-                                intake.roll(6)
+                                intake.roll(6, 0.3)
                         )
                 )
                 .build();
 
-        Action phase2 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(-155)))
+        Action phase2 = drive.actionBuilder(new Pose2d(58, -12.5, Math.toRadians(-155)))
                 .turn(Math.toRadians(-115)) //turn to 270 deg
                 .strafeTo(new Vector2d(31, -29))
                 .strafeTo(new Vector2d(31, -63.5))
                 .build();
 
-        Action phase3 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(-270)))
+        Action phase3 = drive.actionBuilder(new Pose2d(58, -12.5, Math.toRadians(-270)))
                 .strafeTo(new Vector2d(52, -22))
                 .build();
 
-        Action phase4 = drive.actionBuilder(new Pose2d(52, 22, Math.toRadians(-270)))
-                .turn(Math.toRadians(120))
+        Action phase4 = drive.actionBuilder(new Pose2d(54, -20, Math.toRadians(-270)))
+                .turn(Math.toRadians(115))
                 .waitSeconds(1)
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(7, 1),
-                                intake.roll(7)
+                                intake.roll(7, 1)
                         )
                 )
                 .build();
@@ -236,7 +236,7 @@ public class BlueAutoFar extends LinearOpMode {
                         ),
                         new ParallelAction(
                                 phase2,
-                                intake.roll(7),
+                                intake.roll(7, 1),
                                 ramp.rampUp(5, 0.2)
                         ),
                         phase3,

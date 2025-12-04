@@ -148,22 +148,22 @@ public class RedAutoClosev2 extends LinearOpMode {
     }
 
     private class Intake {
-        private CRServo intakeServo;
+        private DcMotorEx intakeServo;
         private ElapsedTime timer;
 
         public Intake(HardwareMap hwMap){
-            intakeServo = hwMap.get(CRServo.class, "intakeServo");
+            intakeServo = hwMap.get(DcMotorEx.class, "intakeServo");
             timer = new ElapsedTime();
         }
 
-        public Action roll(double seconds){
+        public Action roll(double seconds, double power){
             return new Action() {
                 private boolean initialized = false;
 
                 @Override
                 public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                     if (!initialized){
-                        intakeServo.setPower(-1);
+                        intakeServo.setPower(-power);
                         initialized = true;
                         timer.reset();
                     }
@@ -202,7 +202,7 @@ public class RedAutoClosev2 extends LinearOpMode {
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(4, 1),
-                                intake.roll(4)
+                                intake.roll(4, 0.2)
                         )
                 )
                 .build();
@@ -211,16 +211,16 @@ public class RedAutoClosev2 extends LinearOpMode {
         // Drive to pick up balls
         Action phase3 = drive.actionBuilder(new Pose2d(2, 12.5, Math.toRadians(135)))
                 .turn(Math.toRadians(135))
-                .strafeTo(new Vector2d(2, 63.5))
+                .strafeTo(new Vector2d(0, 65.5))
                 .build();
 
         Action phase4 = drive.actionBuilder(new Pose2d(2, 62.5, Math.toRadians(270)))
-                .strafeTo(new Vector2d(2, 12.5))
+                .strafeTo(new Vector2d(0, 12.5))
                 .build();
 
 
         // Rotate then shoot
-        Action phase5 = drive.actionBuilder(new Pose2d(2, 12.5, Math.toRadians(270)))
+        Action phase5 = drive.actionBuilder(new Pose2d(0, 12.5, Math.toRadians(270)))
                 .turn(Math.toRadians(-135))
                 .build();
 
@@ -228,16 +228,16 @@ public class RedAutoClosev2 extends LinearOpMode {
                 .waitSeconds(2)
                 .stopAndAdd(
                         new ParallelAction(
-                                ramp.rampUp(3, 1),
-                                intake.roll(3)
+                                ramp.rampUp(5, 1),
+                                intake.roll(5, 0.3)
                         )
                 )
                 .build();
 
         Action phase7 = drive.actionBuilder(new Pose2d(2, 12.5, Math.toRadians(135)))
                 .turn(Math.toRadians(135))
-                .strafeTo(new Vector2d(25, 28))
-                .strafeTo(new Vector2d(25, 67.5))
+                .strafeTo(new Vector2d(35, 28))
+//                .strafeTo(new Vector2d(35, 67.5))
                 .build();
 
         Action phase8 = drive.actionBuilder(new Pose2d(25, 62.5, Math.toRadians(270)))
@@ -250,12 +250,12 @@ public class RedAutoClosev2 extends LinearOpMode {
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(2, 1),
-                                intake.roll(2)
+                                intake.roll(2, 0.3)
                         )
                 )
                 .build();
 
-        Action phase10 = drive.actionBuilder(new Pose2d(2, 12.5, Math.toRadians(-135)))
+        Action phase10 = drive.actionBuilder(new Pose2d(35, 67.5, Math.toRadians(135)))
                 .strafeTo(new Vector2d(60, 60))
                 .build();
 
@@ -267,32 +267,32 @@ public class RedAutoClosev2 extends LinearOpMode {
                 new ParallelAction(
                         phase1,
                         phase2,
-                        launcher.shoot(-1300, 4)
+                        launcher.shoot(-1300, 5)
                 ),
                 new ParallelAction(
                         phase3,
-                        ramp.rampUp(4, 0.5),
-                        intake.roll(4),
-                        launcher.shoot(200, 4)
+                        ramp.rampUp(5, 0.5),
+                        intake.roll(5, 0.5),
+                        launcher.shoot(200, 5)
                 ),
                 phase4,
                 new ParallelAction(
                         phase5,
                         phase6,
-                        launcher.shoot(-1250, 4.5)
+                        launcher.shoot(-1250, 5)
                 ),
                 new ParallelAction(
                         phase7,
-                        ramp.rampUp(5, 0.5),
-                        intake.roll(5),
-                        launcher.shoot(200, 4)
-                ),
-                new ParallelAction(
-                        phase8,
-                        launcher.shoot(-1300, 4),
-                        phase9
-                ),
-                phase10
+//                        ramp.rampUp(5, 0.5),
+//                        intake.roll(5, 0.5),
+                        launcher.shoot(0, 5)
+                )
+//                new ParallelAction(
+//                        phase8,
+//                        launcher.shoot(-1300, 4),
+//                        phase9
+//                ),
+//                phase10
             )
         );
 

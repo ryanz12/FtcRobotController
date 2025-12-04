@@ -56,6 +56,7 @@
 <!--            <RevDistanceSensor name="[...]" port="1" bus="[...]" />-->
 <!--            <goBILDA5201SeriesMotor name="intakeMotor" port="0" />-->
             <goBILDA5202SeriesMotor name="launchMotor" port="0" />
+            <goBILDA5202SeriesMotor name="intakeServo" port="1" />
             <REV_VL53L0X_RANGE_SENSOR name="distanceSensor" port="0" bus="0" />
 <!--            <goBILDA5202SeriesMotor name="rotateMotor" port="2" />-->
 <!--            <goBILDA5201SeriesMotor name="specimenSlide" port="3" />-->
@@ -196,7 +197,7 @@
             <goBILDA5201SeriesMotor name="rightFront" port="1" />
             <goBILDA5202SeriesMotor name="leftBack" port="2" />
             <goBILDA5202SeriesMotor name="rightBack" port="3" />
-            <ContinuousRotationServo name="intakeServo" port="0"/>
+<!--            <ContinuousRotationServo name="intakeServo" port="0"/>-->
             <ContinuousRotationServo name="beltServoOne" port="1"/>
             <ContinuousRotationServo name="beltServoTwo" port="2"/>
         </LynxModule>

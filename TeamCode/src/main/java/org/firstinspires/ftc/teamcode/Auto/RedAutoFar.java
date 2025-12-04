@@ -75,8 +75,6 @@ public class RedAutoFar extends LinearOpMode {
         }
 
         public Action shoot(double target, double time){
-            target_velocity = target;
-
             return new Action() {
                 private boolean initialized = false;
 
@@ -84,6 +82,7 @@ public class RedAutoFar extends LinearOpMode {
                 public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                     if (!initialized){
                         timer.reset();
+                        target_velocity = target;
                         initialized = true;
                     }
 
@@ -149,22 +148,22 @@ public class RedAutoFar extends LinearOpMode {
     }
 
     private class Intake {
-        private CRServo intakeServo;
+        private DcMotorEx intakeServo;
         private ElapsedTime timer;
 
         public Intake(HardwareMap hwMap){
-            intakeServo = hwMap.get(CRServo.class, "intakeServo");
+            intakeServo = hwMap.get(DcMotorEx.class, "intakeServo");
             timer = new ElapsedTime();
         }
 
-        public Action roll(double seconds){
+        public Action roll(double seconds, double power){
             return new Action() {
                 private boolean initialized = false;
 
                 @Override
                 public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                     if (!initialized){
-                        intakeServo.setPower(-1);
+                        intakeServo.setPower(-power);
                         initialized = true;
                         timer.reset();
                     }
@@ -199,7 +198,7 @@ public class RedAutoFar extends LinearOpMode {
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(6, 1),
-                                intake.roll(6)
+                                intake.roll(6, 0.3)
                         )
                 )
                 .build();
@@ -207,7 +206,7 @@ public class RedAutoFar extends LinearOpMode {
         Action phase2 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(155)))
                 .turn(Math.toRadians(115)) //turn to 270 deg
                 .strafeTo(new Vector2d(31, 29))
-                .strafeTo(new Vector2d(31, 63.5))
+                .strafeTo(new Vector2d(31, 68.5))
                 .build();
 
         Action phase3 = drive.actionBuilder(new Pose2d(58, 12.5, Math.toRadians(270)))
@@ -220,9 +219,13 @@ public class RedAutoFar extends LinearOpMode {
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(7, 1),
-                                intake.roll(7)
+                                intake.roll(7, 0.3)
                         )
                 )
+                .build();
+
+        Action phase5 = drive.actionBuilder(new Pose2d(52, 22, Math.toRadians(150)))
+                .strafeTo(new Vector2d(35, 67.5))
                 .build();
 
         waitForStart();
@@ -232,17 +235,22 @@ public class RedAutoFar extends LinearOpMode {
         Actions.runBlocking(new SequentialAction(
                 new ParallelAction(
                         phase1,
-                        launcher.shoot(-1650, 7)
+                        launcher.shoot(-1600, 7)
                 ),
                 new ParallelAction(
                         phase2,
-                        intake.roll(7),
-                        ramp.rampUp(5, 0.2)
+                        intake.roll(5, 0.8),
+                        ramp.rampUp(5, 0.5),
+                        launcher.shoot(200, 5)
                 ),
                 phase3,
                 new ParallelAction(
                         phase4,
                         launcher.shoot(-1500, 7)
+                ),
+                new ParallelAction(
+                        phase5,
+                        launcher.shoot(0, 3)
                 )
             )
         );

@@ -149,22 +149,22 @@ public class RedAutoClose extends LinearOpMode {
     }
 
     private class Intake {
-        private CRServo intakeServo;
+        private DcMotorEx intakeServo;
         private ElapsedTime timer;
 
         public Intake(HardwareMap hwMap){
-            intakeServo = hwMap.get(CRServo.class, "intakeServo");
+            intakeServo = hwMap.get(DcMotorEx.class, "intakeServo");
             timer = new ElapsedTime();
         }
 
-        public Action roll(double seconds){
+        public Action roll(double seconds, double power){
             return new Action() {
                 private boolean initialized = false;
 
                 @Override
                 public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                     if (!initialized){
-                        intakeServo.setPower(-1);
+                        intakeServo.setPower(-power);
                         initialized = true;
                         timer.reset();
                     }
@@ -203,7 +203,7 @@ public class RedAutoClose extends LinearOpMode {
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(3, 1),
-                                intake.roll(3)
+                                intake.roll(3, 0.3)
                         )
                 )
                 .build();
@@ -220,7 +220,7 @@ public class RedAutoClose extends LinearOpMode {
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(3, 1),
-                                intake.roll(3)
+                                intake.roll(3, 0.3)
                         )
                 )
                 .build();
@@ -238,7 +238,7 @@ public class RedAutoClose extends LinearOpMode {
                 ),
                 new ParallelAction(
                         phase3,
-                        intake.roll(5),
+                        intake.roll(5, 1),
                         ramp.rampUp(5, 0.5)
                 ),
                 new ParallelAction(

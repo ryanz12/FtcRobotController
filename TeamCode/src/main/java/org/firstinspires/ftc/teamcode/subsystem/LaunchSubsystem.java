@@ -24,6 +24,10 @@ public class LaunchSubsystem extends SubsystemBase {
 //        launchMotor.setVelocity(power * maxTickPerSec);
     }
 
+    public void calc_power(double target_velocity){
+
+    }
+
     public void reverseShoot (){
         launchMotor.setPower(-1);
 //        launchMotor.setVelocity(-maxTickPerSec);
