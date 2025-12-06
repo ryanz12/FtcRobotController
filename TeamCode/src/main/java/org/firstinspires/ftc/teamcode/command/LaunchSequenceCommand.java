@@ -193,7 +193,7 @@ public class LaunchSequenceCommand extends CommandBase {
             beltSubsystem.stop();
             intakeSubsystem.stop();
             bPreviouslyPressed = bPressed;
-            telemetry.addData("RB Pressed", false);
+//            telemetry.addData("RB Pressed", false);
             telemetry.update();
             return;
         }
@@ -292,8 +292,8 @@ public class LaunchSequenceCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        telemetry.addData("LaunchSequenceCommand ended",
-                interrupted ? "interrupted" : "completed");
+//        telemetry.addData("LaunchSequenceCommand ended",
+//                interrupted ? "interrupted" : "completed");
         telemetry.update();
         beltSubsystem.stop();
         intakeSubsystem.stop();

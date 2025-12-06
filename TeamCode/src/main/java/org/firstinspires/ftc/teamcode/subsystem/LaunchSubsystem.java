@@ -6,13 +6,17 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class LaunchSubsystem extends SubsystemBase {
     private DcMotorEx launchMotor;
 
     private String launchMotorName = "launchMotor";
-    private final double maxTickPerSec = 2700;
 
-    public LaunchSubsystem(HardwareMap hwMap){
+    private Telemetry telemetry;
+
+    public LaunchSubsystem(HardwareMap hwMap, Telemetry telemetry){
+        this.telemetry = telemetry;
 
         launchMotor = hwMap.get(DcMotorEx.class, launchMotorName);
         launchMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //https://www.reddit.com/r/FTC/comments/lfl82f/whats_the_difference_between_setvelocity_and/
@@ -24,9 +28,6 @@ public class LaunchSubsystem extends SubsystemBase {
 //        launchMotor.setVelocity(power * maxTickPerSec);
     }
 
-    public void calc_power(double target_velocity){
-
-    }
 
     public void reverseShoot (){
         launchMotor.setPower(-1);

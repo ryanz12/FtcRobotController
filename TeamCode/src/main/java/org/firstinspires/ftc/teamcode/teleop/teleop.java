@@ -71,7 +71,7 @@ public class teleop extends CommandOpMode {
         // ----- Hardware -----
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
-        launchSubsystem = new LaunchSubsystem(hardwareMap);
+        launchSubsystem = new LaunchSubsystem(hardwareMap, telemetry);
         beltSubsystem = new BeltSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         drive_subsystem = new DriveSubsystem(hardwareMap);

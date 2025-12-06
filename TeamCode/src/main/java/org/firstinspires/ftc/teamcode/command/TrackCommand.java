@@ -42,10 +42,10 @@ public class TrackCommand extends CommandBase {
             range = cameraData.get(1);
         }
 
-        if (x > 5){
+        if (x > 10){
             turn = -0.2;
         }
-        else if (x < -5){
+        else if (x < -10){
             turn = 0.2;
         }
         else {
