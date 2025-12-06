@@ -237,7 +237,7 @@ public class RedAutoClosev2 extends LinearOpMode {
         Action phase7 = drive.actionBuilder(new Pose2d(2, 12.5, Math.toRadians(135)))
                 .turn(Math.toRadians(135))
                 .strafeTo(new Vector2d(35, 28))
-//                .strafeTo(new Vector2d(35, 67.5))
+//              .strafeTo(new Vector2d(35, 67.5))
                 .build();
 
         Action phase8 = drive.actionBuilder(new Pose2d(25, 62.5, Math.toRadians(270)))
@@ -282,17 +282,17 @@ public class RedAutoClosev2 extends LinearOpMode {
                         launcher.shoot(-1250, 5)
                 ),
                 new ParallelAction(
-                        phase7,
-//                        ramp.rampUp(5, 0.5),
-//                        intake.roll(5, 0.5),
-                        launcher.shoot(0, 5)
+                        phase7
+//                      ramp.rampUp(5, 0.5),
+//                      intake.roll(5, 0.5),
+//                      launcher.shoot(0, 5)
                 )
-//                new ParallelAction(
-//                        phase8,
-//                        launcher.shoot(-1300, 4),
-//                        phase9
-//                ),
-//                phase10
+//              new ParallelAction(
+//                      phase8,
+//                      launcher.shoot(-1300, 4),
+//                      phase9
+//              ),
+//              phase10
             )
         );
 

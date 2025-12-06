@@ -249,8 +249,8 @@ public class RedAutoFar extends LinearOpMode {
                         launcher.shoot(-1500, 7)
                 ),
                 new ParallelAction(
-                        phase5,
-                        launcher.shoot(0, 3)
+                        phase5
+//                      launcher.shoot(0, 3)
                 )
             )
         );
