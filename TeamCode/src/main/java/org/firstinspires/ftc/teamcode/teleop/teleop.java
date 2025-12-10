@@ -80,6 +80,7 @@ public class teleop extends CommandOpMode {
         // ----- Default Commands -----
         drive_subsystem.setDefaultCommand(new DriveCommand(drive_subsystem, gamepad1));
         intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem, shooting_controller));
+        launchSubsystem.setDefaultCommand(new ShootCommand(launchSubsystem, shooting_controller));
 
         // -------- Belt Controls --------
         new GamepadButton(shooting_controller, GamepadKeys.Button.X)
@@ -105,8 +106,8 @@ public class teleop extends CommandOpMode {
                 });
 
         // -------- Shoot (B) --------
-        new GamepadButton(shooting_controller, GamepadKeys.Button.B)
-                .whenPressed(new ShootCommand(launchSubsystem, gamepad2));
+//        new GamepadButton(shooting_controller, GamepadKeys.Button.B)
+//                .whenPressed(new ShootCommand(launchSubsystem, gamepad2));
 
         // -------- Auto Launch Sequence (LB) --------
         schedule(new LaunchSequenceCommand(

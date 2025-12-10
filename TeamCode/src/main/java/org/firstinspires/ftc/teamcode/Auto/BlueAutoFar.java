@@ -193,28 +193,27 @@ public class BlueAutoFar extends LinearOpMode {
 
         Action phase1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(58, -12.5))
-                .turn(Math.toRadians(25))
+                .turn(Math.toRadians(20))
                 .waitSeconds(0.5)
                 .stopAndAdd(
                         new ParallelAction(
-                                ramp.rampUp(6, 1),
-                                intake.roll(6, 0.3)
+                                ramp.rampUp(6, 1)
                         )
                 )
                 .build();
 
-        Action phase2 = drive.actionBuilder(new Pose2d(58, -12.5, Math.toRadians(-155)))
-                .turn(Math.toRadians(-115)) //turn to 270 deg
+        Action phase2 = drive.actionBuilder(new Pose2d(58, -12.5, Math.toRadians(-160)))
+                .turn(Math.toRadians(-110)) //turn to 270 deg
                 .strafeTo(new Vector2d(31, -29))
                 .strafeTo(new Vector2d(31, -68.5))
                 .build();
 
         Action phase3 = drive.actionBuilder(new Pose2d(58, -12.5, Math.toRadians(-270)))
-                .strafeTo(new Vector2d(52, -22))
+                .strafeTo(new Vector2d(54, -22))
                 .build();
 
-        Action phase4 = drive.actionBuilder(new Pose2d(52, -22, Math.toRadians(-270)))
-                .turn(Math.toRadians(120))
+        Action phase4 = drive.actionBuilder(new Pose2d(54, -22, Math.toRadians(-270)))
+                .turn(Math.toRadians(110))
                 .waitSeconds(1)
                 .stopAndAdd(
                         new ParallelAction(
@@ -235,7 +234,7 @@ public class BlueAutoFar extends LinearOpMode {
         Actions.runBlocking(new SequentialAction(
                         new ParallelAction(
                                 phase1,
-                                launcher.shoot(-1600, 7)
+                                launcher.shoot(-1500, 7)
                         ),
                         new ParallelAction(
                                 phase2,
