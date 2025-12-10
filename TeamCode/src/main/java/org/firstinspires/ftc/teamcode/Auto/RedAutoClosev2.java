@@ -211,20 +211,20 @@ public class RedAutoClosev2 extends LinearOpMode {
         // Drive to pick up balls
         Action phase3 = drive.actionBuilder(new Pose2d(2, 12.5, Math.toRadians(135)))
                 .turn(Math.toRadians(135))
-                .strafeTo(new Vector2d(0, 65.5))
+                .strafeTo(new Vector2d(-6, 65.5))
                 .build();
 
-        Action phase4 = drive.actionBuilder(new Pose2d(2, 62.5, Math.toRadians(270)))
-                .strafeTo(new Vector2d(0, 12.5))
+        Action phase4 = drive.actionBuilder(new Pose2d(-2, 62.5, Math.toRadians(270)))
+                .strafeTo(new Vector2d(-6, 16.5))
                 .build();
 
 
         // Rotate then shoot
-        Action phase5 = drive.actionBuilder(new Pose2d(0, 12.5, Math.toRadians(270)))
+        Action phase5 = drive.actionBuilder(new Pose2d(-6, 16.5, Math.toRadians(270)))
                 .turn(Math.toRadians(-135))
                 .build();
 
-        Action phase6 = drive.actionBuilder(new Pose2d(2, 12.5, Math.toRadians(135)))
+        Action phase6 = drive.actionBuilder(new Pose2d(-6, 16.5, Math.toRadians(135)))
                 .waitSeconds(2)
                 .stopAndAdd(
                         new ParallelAction(
@@ -267,7 +267,7 @@ public class RedAutoClosev2 extends LinearOpMode {
                 new ParallelAction(
                         phase1,
                         phase2,
-                        launcher.shoot(-1300, 5)
+                        launcher.shoot(-1250, 6)
                 ),
                 new ParallelAction(
                         phase3,

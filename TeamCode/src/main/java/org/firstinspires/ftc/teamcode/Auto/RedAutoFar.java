@@ -235,7 +235,7 @@ public class RedAutoFar extends LinearOpMode {
         Actions.runBlocking(new SequentialAction(
                 new ParallelAction(
                         phase1,
-                        launcher.shoot(-1600, 7)
+                        launcher.shoot(-1500, 7)
                 ),
                 new ParallelAction(
                         phase2,
