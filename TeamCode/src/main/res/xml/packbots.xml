@@ -45,21 +45,21 @@
         <!--motors-->
 
 
-            <!--color sensor-->
-<!--        <RevColorSensorV3 name="[...]" port="0" bus="[...]" />-->
+        <!--color sensor-->
+        <!--        <RevColorSensorV3 name="[...]" port="0" bus="[...]" />-->
 
         <LynxModule name="Expansion Hub 1" port="1">
-        <!--Expansion hub configurations-->
+            <!--Expansion hub configurations-->
 
 
-                <!--We need to figure out how to add distance sensor to the xml -->
-<!--            <RevDistanceSensor name="[...]" port="1" bus="[...]" />-->
-<!--            <goBILDA5201SeriesMotor name="intakeMotor" port="0" />-->
+            <!--We need to figure out how to add distance sensor to the xml -->
+            <!--            <RevDistanceSensor name="[...]" port="1" bus="[...]" />-->
+            <!--            <goBILDA5201SeriesMotor name="intakeMotor" port="0" />-->
             <goBILDA5202SeriesMotor name="launchMotor" port="0" />
-            <goBILDA5202SeriesMotor name="intakeServo" port="1" />
-            <REV_VL53L0X_RANGE_SENSOR name="distanceSensor" port="0" bus="0" />
-<!--            <goBILDA5202SeriesMotor name="rotateMotor" port="2" />-->
-<!--            <goBILDA5201SeriesMotor name="specimenSlide" port="3" />-->
+            <goBILDA5202SeriesMotor name="intakeMotor" port="1" />
+            <SparkFunOTOS name="sensor_otos" port="0" bus="0" />
+            <!--            <goBILDA5202SeriesMotor name="rotateMotor" port="2" />-->
+            <!--            <goBILDA5201SeriesMotor name="specimenSlide" port="3" />-->
             <!-- **********************************************************
 
             DC Motors
@@ -83,7 +83,7 @@
 
             ************************************************************* -->
 
-<!--            <Motor name=".."  port="[...]" /> &lt;!&ndash; Yellow &ndash;&gt;-->
+            <!--            <Motor name=".."  port="[...]" /> &lt;!&ndash; Yellow &ndash;&gt;-->
 
 
             <!--
@@ -110,7 +110,7 @@
 
             ************************************************************* -->
 
-<!--            <Servo name="[...] port=[...]" />-->
+            <!--            <Servo name="[...] port=[...]" />-->
 
 
             <!--
@@ -121,7 +121,7 @@
 
             -->
 
-<!--            <RevSPARKMini name="[...]" port="[...]" />-->
+            <!--            <RevSPARKMini name="[...]" port="[...]" />-->
 
             <!-- *************************************************************
 
@@ -145,8 +145,8 @@
 
             ************************************************************* -->
 
-<!--            <DigitalDevice name="[...]" port="[... (odd)]" />-->
-<!--            <RevTouchSensor name="[...] port=[... (odd)]" />-->
+            <!--            <DigitalDevice name="[...]" port="[... (odd)]" />-->
+            <!--            <RevTouchSensor name="[...] port=[... (odd)]" />-->
 
             <!-- *************************************************************
 
@@ -160,11 +160,11 @@
             ************************************************************* -->
 
             <!-- REV Time-of-Flight 2m Distance Sensor -->
-<!--            <REV_VL53L0X_RANGE_SENSOR name="[...]" port="0" bus="[...]" />-->
+            <!--            <REV_VL53L0X_RANGE_SENSOR name="[...]" port="0" bus="[...]" />-->
 
-<!--            &lt;!&ndash; V1 and V2 of the REV color/distance sensor &ndash;&gt;-->
+            <!--            &lt;!&ndash; V1 and V2 of the REV color/distance sensor &ndash;&gt;-->
 
-<!--            <LynxColorSensor name="[...]" port="0" bus="[...]" />-->
+            <!--            <LynxColorSensor name="[...]" port="0" bus="[...]" />-->
 
             <!--
 
@@ -177,19 +177,19 @@
 
 
 
-<!--            <RevBlinkinLedDriver name="[...]" port="0" bus="[...]" />-->
+            <!--            <RevBlinkinLedDriver name="[...]" port="0" bus="[...]" />-->
         </LynxModule>goBILDA5202SeriesMotor
 
-<!--        <LynxModule name="Secondary Hub" port="3">-->
+        <!--        <LynxModule name="Secondary Hub" port="3">-->
 
-            <!-- *************************************************************
+        <!-- *************************************************************
 
-            Add devices here that are plugged into the secondary REV expansion
-            hub, following the syntax above.
+        Add devices here that are plugged into the secondary REV expansion
+        hub, following the syntax above.
 /2m distance sensor
-            ************************************************************* -->
+        ************************************************************* -->
 
-<!--        </LynxModule>-->
+        <!--        </LynxModule>-->
         <LynxModule name="Control Hub" port="2">
             <!-- The built-in IMU is always port="0" bus="0" -->
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
@@ -197,9 +197,10 @@
             <goBILDA5201SeriesMotor name="rightFront" port="1" />
             <goBILDA5202SeriesMotor name="leftBack" port="2" />
             <goBILDA5202SeriesMotor name="rightBack" port="3" />
-<!--            <ContinuousRotationServo name="intakeServo" port="0"/>-->
-            <ContinuousRotationServo name="beltServoOne" port="1"/>
-            <ContinuousRotationServo name="beltServoTwo" port="2"/>
+            <!--            <ContinuousRotationServo name="intakeServo" port="0"/>-->
+            <ContinuousRotationServo name="beltServoOne" port="0"/>
+            <ContinuousRotationServo name="beltServoTwo" port="1"/>
+            <ContinuousRotationServo name="outtakeServo" port="3"/>
         </LynxModule>
     </LynxUsbDevice>
     <Webcam name="Webcam 1" serialNumber="A66E6480" />
