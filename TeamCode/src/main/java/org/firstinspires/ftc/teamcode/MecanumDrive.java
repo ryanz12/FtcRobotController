@@ -32,6 +32,7 @@ import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -63,15 +64,14 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
 
         // drive model parameters
-        public double inPerTick = 0.02147413490392416;
-        public double lateralInPerTick = 0.02232558139534883;
-        public double trackWidthTicks = 938.0780075529856;
-
+        public double inPerTick = 1;
+        public double lateralInPerTick = 0.7860856768927917;
+        public double trackWidthTicks = 13.734928469582774;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.6767;
-        public double kV = 0.00423609;
-        public double kA = 0.0005;
+        public double kS = 1.1089674746616118;
+        public double kV = 0.20702268239448957;
+        public double kA = 0.001;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -83,9 +83,9 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 20.0;
-        public double lateralGain = 10.0;
-        public double headingGain = 7.0; // shared with turn
+        public double axialGain = 10.0;
+        public double lateralGain = 5.0;
+        public double headingGain = 5.0; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -140,8 +140,6 @@ public final class MecanumDrive {
 
             // TODO: reverse encoders if needed
             //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
             this.pose = pose;
         }
@@ -250,7 +248,7 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new DriveLocalizer(pose);
+        localizer = new OTOSLocalizer(hardwareMap, pose);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
@@ -456,14 +454,14 @@ public final class MecanumDrive {
     public PoseVelocity2d updatePoseEstimate() {
         PoseVelocity2d vel = localizer.update();
         poseHistory.add(localizer.getPose());
-        
+
         while (poseHistory.size() > 100) {
             poseHistory.removeFirst();
         }
 
         estimatedPoseWriter.write(new PoseMessage(localizer.getPose()));
-        
-        
+
+
         return vel;
     }
 
