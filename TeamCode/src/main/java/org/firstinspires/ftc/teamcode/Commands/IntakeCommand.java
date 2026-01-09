@@ -1,22 +1,19 @@
-package org.firstinspires.ftc.teamcode.command;
+package org.firstinspires.ftc.teamcode.Commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
 
 public class IntakeCommand extends CommandBase {
-
-    private final IntakeSubsystem intakeSubsystem;
-    private final GamepadEx gamepad;
-
-
-    public IntakeCommand(IntakeSubsystem i, GamepadEx g) {
-        this.intakeSubsystem = i;
+    private IntakeSubsystem intakeSubsystem;
+    private GamepadEx gamepad;
+    public IntakeCommand(IntakeSubsystem intakeSubsystem, GamepadEx g){
+        this.intakeSubsystem = intakeSubsystem;
         this.gamepad = g;
 
-        addRequirements(i);
+        addRequirements(intakeSubsystem);
     }
 
     @Override

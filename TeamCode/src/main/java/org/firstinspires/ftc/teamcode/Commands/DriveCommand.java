@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode.command;
+package org.firstinspires.ftc.teamcode.Commands;
+
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import org.firstinspires.ftc.teamcode.subsystem.DriveSubsystem;
+
+import org.firstinspires.ftc.teamcode.Subsystems.DriveSubsystem;
 
 public class DriveCommand extends CommandBase {
     private final DriveSubsystem driveSubsystem;
@@ -10,6 +12,7 @@ public class DriveCommand extends CommandBase {
         NORMAL,
         INVERTED
     }
+    private double correctionState = 0;
     private DriveState currentState = DriveState.NORMAL;
     private boolean yPressedLast = false;
     public DriveCommand(DriveSubsystem d, Gamepad g) {
@@ -29,6 +32,12 @@ public class DriveCommand extends CommandBase {
         } else {
             invertedControls();
         }
+
+        if (gamepad.a) {
+            correctionState = 1;
+        } else if (gamepad.b){
+            correctionState = 0;
+        }
     }
     private void toggleDriveState() {
         if (currentState == DriveState.NORMAL) {
@@ -41,7 +50,11 @@ public class DriveCommand extends CommandBase {
         double forward = gamepad.left_stick_y;
         double strafe = -gamepad.left_stick_x;
         double turn = -gamepad.right_stick_x;
+
+
         driveSubsystem.drive(strafe, forward, turn);
+
+
     }
     private void invertedControls() {
         double forward = -gamepad.left_stick_y;
