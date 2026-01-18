@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.MinVelConstraint;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -22,6 +24,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Arrays;
 
+@Config
 @Autonomous
 public class RedCloseAuto extends LinearOpMode {
 
@@ -39,7 +42,7 @@ public class RedCloseAuto extends LinearOpMode {
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
 
-        initialPose = new Pose2d(63, 12, Math.toRadians(180));
+        initialPose = new Pose2d(50, -50, Math.toRadians(-45));
         drive = new MecanumDrive(hardwareMap, initialPose);
 
         VelConstraint baseVel = new MinVelConstraint(Arrays.asList(
@@ -48,13 +51,36 @@ public class RedCloseAuto extends LinearOpMode {
         ));
         AccelConstraint baseAccel = new ProfileAccelConstraint(-30.0, 30.0); // in/s^2
 
-        Action test = drive.actionBuilder(initialPose)
-                .splineTo(new Vector2d(39, 12), Math.toRadians(180),
-                        // override ONLY velocity for this segment (slow)
-                        new TranslationalVelConstraint(20.0),
-                        // keep base accel
-                        baseAccel
+        Action phase1 = drive.actionBuilder(initialPose)
+                .strafeTo(new Vector2d(20, -52))
+                .turn(Math.toRadians(45))
+                .waitSeconds(0.5)
+                .stopAndAdd(
+                        new ParallelAction(
+                                ramp.rampUp(4, 1),
+                                outtake.roll(4, 1)
+                        )
                 )
+                .build();
+
+        Action phase2 = drive.actionBuilder(new Pose2d(12, -52, 0))
+                .turn(Math.toRadians(135))
+                .strafeTo(new Vector2d(5, -60))
+                .strafeTo(new Vector2d(30, -65))
+                .build();
+
+        Action phase3 = drive.actionBuilder(new Pose2d(20, -65, Math.toRadians(135)))
+                .strafeTo(new Vector2d(12, -52))
+                .waitSeconds(0.5)
+                .stopAndAdd(
+                        new ParallelAction(
+                                ramp.rampUp(4, 1),
+                                outtake.roll(4, 1)
+                        )
+                )
+                .build();
+
+        Action phase4 = drive.actionBuilder(new Pose2d(12, -52, Math.toRadians(135)))
                 .build();
 
         waitForStart();
@@ -62,7 +88,19 @@ public class RedCloseAuto extends LinearOpMode {
         if (isStopRequested()) return;
 
         Actions.runBlocking(new SequentialAction(
-                test
+                new ParallelAction(
+                    new SequentialAction(
+                            phase1,
+                            new ParallelAction(
+                                    phase2,
+                                    intake.roll(5, 0.9),
+                                    ramp.rampUp(5, 0.6),
+                                    outtake.roll(5, -0.55)
+                            ),
+                            phase3
+                    ),
+                    launcher.shoot(-1150, 30)
+                )
             )
         );
 

@@ -40,7 +40,7 @@ public class MainTeleop extends CommandOpMode {
         outtakeSubsystem = new OuttakeSubsystem(hardwareMap);
 
         driveSubsystem.setDefaultCommand(new DriveCommand(driveSubsystem, gamepad1));
-        launchSubsystem.setDefaultCommand(new LaunchCommand(launchSubsystem, cameraSubsystem, shootingController, telemetry));
+        launchSubsystem.setDefaultCommand(new LaunchCommand(launchSubsystem, driveController, shootingController, telemetry));
         intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem, shootingController));
         outtakeSubsystem.setDefaultCommand(new OuttakeCommand(outtakeSubsystem, shootingController));
         beltSubsystem.setDefaultCommand(new BeltCommand(beltSubsystem, shootingController));

@@ -54,7 +54,7 @@ public class RedFarAuto extends LinearOpMode {
         Action phase1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(-60, 10))
                 .turn(Math.toRadians(-25))
-                .waitSeconds(0.5)
+                .waitSeconds(0.75)
                 .stopAndAdd(
                         new ParallelAction(
                                 ramp.rampUp(4, 1),
@@ -66,7 +66,7 @@ public class RedFarAuto extends LinearOpMode {
         Action phase2 = drive.actionBuilder(new Pose2d(-60, 10, Math.toRadians(-25)))
                 .turn(Math.toRadians(115))
                 .strafeTo(new Vector2d(-45, 0))
-                .strafeTo(new Vector2d(-45, -24))
+                .strafeTo(new Vector2d(-45, -22))
                 .build();
 
         Action phase3 = drive.actionBuilder(new Pose2d(-45, -24, Math.toRadians(90)))
@@ -83,12 +83,12 @@ public class RedFarAuto extends LinearOpMode {
 
         Action phase4 = drive.actionBuilder(new Pose2d(-60, 10, Math.toRadians(-25)))
                 .turn(Math.toRadians(115))
-                .strafeTo(new Vector2d(-25, 0))
-                .strafeTo(new Vector2d(-25, -28))
+                .strafeTo(new Vector2d(-26, 0))
+                .strafeTo(new Vector2d(-26, -24))
                 .build();
 
         Action phase5 = drive.actionBuilder(new Pose2d(-25, -28, Math.toRadians(90)))
-                .strafeTo(new Vector2d(-60, 10))
+                .strafeTo(new Vector2d(-60, 4))
                 .turn(Math.toRadians(-115))
                 .stopAndAdd(
                         new ParallelAction(
@@ -114,15 +114,15 @@ public class RedFarAuto extends LinearOpMode {
                                 new ParallelAction(
                                         phase2,
                                         intake.roll(5, 0.9),
-                                        ramp.rampUp(5, 0.6),
-                                        outtake.roll(5, -0.55)
+                                        ramp.rampUp(5, 0.3),
+                                        outtake.roll(5, -1)
                                 ),
                                 phase3,
                                 new ParallelAction(
                                         phase4,
                                         intake.roll(5.5, 0.9),
-                                        ramp.rampUp(5, 0.6),
-                                        outtake.roll(5, -0.55)
+                                        ramp.rampUp(5, 0.3),
+                                        outtake.roll(5, -1)
                                 ),
                                 phase5,
                                 park

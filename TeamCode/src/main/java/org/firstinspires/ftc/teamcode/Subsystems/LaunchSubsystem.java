@@ -43,6 +43,7 @@ public class LaunchSubsystem extends SubsystemBase {
         output = kF * target + kP * error;
 
         if (Math.abs(Math.abs(currentVelocity) - Math.abs(target)) < 30 && target != 0){
+            telemetry.addData("Velocity: ", currentVelocity);
             telemetry.addLine("READY!!");
             telemetry.addLine("READY!!");
             telemetry.addLine("READY!!");

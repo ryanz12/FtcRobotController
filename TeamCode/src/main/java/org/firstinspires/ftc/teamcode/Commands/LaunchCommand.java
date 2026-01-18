@@ -12,8 +12,7 @@ import java.util.List;
 
 public class LaunchCommand extends CommandBase {
     private LaunchSubsystem launchSubsystem;
-    private CameraSubsystem cameraSubsystem;
-    private GamepadEx gamepad;
+    private GamepadEx gamepad1, gamepad2;
     private Telemetry telemetry;
 
     enum MODE {
@@ -21,12 +20,19 @@ public class LaunchCommand extends CommandBase {
         OFF
     }
 
-    private MODE state = MODE.OFF;
+    enum RANGE {
+        FAR,
+        CLOSE
+    }
 
-    public LaunchCommand(LaunchSubsystem launchSubsystem, CameraSubsystem cameraSubsystem, GamepadEx gamepad, Telemetry telemetry){
+
+    private MODE state = MODE.OFF;
+    private RANGE r = RANGE.CLOSE;
+
+    public LaunchCommand(LaunchSubsystem launchSubsystem, GamepadEx gamepad2, GamepadEx gamepad1, Telemetry telemetry){
         this.launchSubsystem = launchSubsystem;
-        this.cameraSubsystem = cameraSubsystem;
-        this.gamepad = gamepad;
+        this.gamepad1 = gamepad1;
+        this.gamepad2 = gamepad2;
         this.telemetry = telemetry;
 
         addRequirements(launchSubsystem);
@@ -43,52 +49,43 @@ public class LaunchCommand extends CommandBase {
         return vi;
     }
 
-    private static double clamp(double x, double lo, double hi) {
-        return Math.max(lo, Math.min(hi, x));
-    }
-
-    private static double lerp(double a, double b, double t) {
-        return a + (b - a) * t;
-    }
-
-    private double speedFromDistanceCm(double distanceCm) {
-        final double d1 = 170.0;
-        final double s1 = 1250.0;
-
-        final double d2 = 304.8;
-        final double s2 = 1450.0;
-
-        double t = (distanceCm - d1) / (d2 - d1);
-        t = clamp(t, 0.0, 1.0);
-
-        return lerp(s1, s2, t);
-    }
-
-
     @Override
     public void execute(){
-        if (gamepad.getButton(GamepadKeys.Button.B)){
+        if (gamepad1.getButton(GamepadKeys.Button.B)){
             state = MODE.ON;
         }
-        if (gamepad.getButton(GamepadKeys.Button.A)){
+        if (gamepad1.getButton(GamepadKeys.Button.A)){
             state = MODE.OFF;
         }
 
-        List<Double> cameraData = cameraSubsystem.getCameraData();
-        double range;
-
-        if (cameraData == null){
-            range = 0;
-        }
-        else {
-            range = cameraData.get(1);
-        }
+//        List<Double> cameraData = cameraSubsystem.getCameraData();
+//        double range;
+//
+//        if (cameraData == null){
+//            range = 0;
+//        }
+//        else {
+//            range = cameraData.get(1);
+//        }
 
         if (state == MODE.ON){
-            double targetSpeed = speedFromDistanceCm(range);  // range assumed in cm
-            launchSubsystem.setSpeed(-targetSpeed, telemetry);
+//            double targetSpeed = speedFromDistanceCm(range);  // range assumed in cm
 
-            telemetry.addData("April Tag distance:", range);
+            if (gamepad2.getButton(GamepadKeys.Button.A)){
+                r = RANGE.CLOSE;
+            }
+            else if (gamepad2.getButton(GamepadKeys.Button.B)){
+                r = RANGE.FAR;
+            }
+
+            if (r == RANGE.CLOSE){
+                launchSubsystem.setSpeed(-1250, telemetry);
+            }
+            else if (r == RANGE.FAR){
+                launchSubsystem.setSpeed(-1500, telemetry);
+            }
+
+//            telemetry.addData("April Tag distance:", range);
             telemetry.update();
         }
         else {
