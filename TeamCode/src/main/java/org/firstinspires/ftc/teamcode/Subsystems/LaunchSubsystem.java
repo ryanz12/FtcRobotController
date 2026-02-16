@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class LaunchSubsystem extends SubsystemBase {
     private DcMotorEx launchMotor;
+    private DcMotorSimple light;
     private double currentVelocity;
     public double target = 0;
     private double kP = 0.003;
@@ -26,6 +27,7 @@ public class LaunchSubsystem extends SubsystemBase {
         launchMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         launchMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         launchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        light = hMap.get(DcMotorSimple.class,"light");
 
         this.telemetry = tel;
     }
@@ -47,9 +49,11 @@ public class LaunchSubsystem extends SubsystemBase {
             telemetry.addLine("READY!!");
             telemetry.addLine("READY!!");
             telemetry.addLine("READY!!");
+            light.setPower(1);
         }
         else {
             telemetry.addLine("");
+            light.setPower(0);
         }
 
         telemetry.update();

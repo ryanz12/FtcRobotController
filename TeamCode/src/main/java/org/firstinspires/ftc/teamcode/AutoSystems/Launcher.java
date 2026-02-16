@@ -83,5 +83,9 @@ public class Launcher {
                 return true;
             }
         };
+
+    }
+    public double getVelocity() {
+        return launchMotor.getVelocity();
     }
 }

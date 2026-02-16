@@ -38,4 +38,39 @@ public class Intake {
             }
         };
     }
+    public Action dynamicRoll(double seconds, double initialPower) {
+        return new Action() {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialized) {
+                    timer.reset();
+                    initialized = true;
+                }
+
+                double elapsed = timer.seconds();
+
+                if (elapsed < seconds) {
+                    // Calculate the multiplier (goes from 1.0 down to 0.0)
+                    double factor = 1.8 - (elapsed / seconds);
+
+                    // Scale the initial power by the factor
+                    double currentPower = initialPower * factor;
+
+                    intakeMotor.setPower(-currentPower);
+
+                    // Log to dashboard so you can see the curve
+                    telemetryPacket.put("Intake Power", currentPower);
+                    return true;
+                } else {
+                    intakeMotor.setPower(0);
+                    return false;
+                }
+            }
+        };
+    }
+    public void setPower(double power) {
+        intakeMotor.setPower(-power); // Kept your negative sign from the Action
+    }
 }

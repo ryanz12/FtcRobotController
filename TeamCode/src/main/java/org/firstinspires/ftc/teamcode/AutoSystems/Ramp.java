@@ -44,4 +44,8 @@ public class Ramp {
             }
         };
     }
+    public void setPower(double speed) {
+        rampServoOne.setPower(-speed);
+        rampServoTwo.setPower(speed);
+    }
 }

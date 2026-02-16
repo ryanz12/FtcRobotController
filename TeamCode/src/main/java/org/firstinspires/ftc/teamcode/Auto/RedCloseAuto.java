@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -15,6 +12,8 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.AutoSystems.Intake;
 import org.firstinspires.ftc.teamcode.AutoSystems.Launcher;
@@ -24,85 +23,144 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Arrays;
 
-@Config
-@Autonomous
+@Autonomous(name = "RedCloseAuto", group = "Autonomous")
 public class RedCloseAuto extends LinearOpMode {
+
+    @Config
+    public static class RedAutoConfigClose {
+        // --- Speed & Timing ---
+        public static double TRAVEL_VEL = 60.0;
+        public static double SCORE_DWELL = 5.0; // 5s launch sequences
+        public static double COLLECT_TIME = 5.0;
+
+        // --- Start Pose ---
+        public static double START_X = 50.0;
+        public static double START_Y = -50.0;
+        public static double START_H = -45.0;
+
+        // --- Phase 1: Score 1 ---
+        public static double P1_SCORE_X = 20.0;
+        public static double P1_SCORE_Y = -20;
+        public static double P1_TURN = 45.0;
+
+        // --- Phase 2: Collect ---
+        public static double P2_TURN = 135.0;
+
+        public static double P2_1_COLLECT_X = -8;
+        public static double P2_1_COLLECT_Y = -15;
+
+        public static double P2_2_COLLECT_X = -8;
+
+        public static double P2_2_COLLECT_Y = -50;
+
+        // --- Phase 3: Collect ---
+        public static double P3_1_COLLECT_X = -35;
+        public static double P3_1_COLLECT_Y = -15;
+        public static double P3_2_COLLECT_X = -35;
+
+        public static double P3_2_COLLECT_Y = -50;
+
+
+        // --- Subsystems ---
+        public static double LAUNCHER_VEL = -1150.0;
+        public static double VEL_THRESHOLD = 25.0;
+        public static double RAMP_POWER = 0.7;
+        public static double WALL_SERVO_PICKUP = 0.0;
+        public static double WALL_SERVO_SHOOT = 0.5;
+    }
 
     private Launcher launcher;
     private Ramp ramp;
     private Intake intake;
     private Outtake outtake;
     private MecanumDrive drive;
-    private Pose2d initialPose;
+    private Servo wallServo;
+    private DcMotorSimple light;
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
         launcher = new Launcher(hardwareMap);
         ramp = new Ramp(hardwareMap);
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
+        wallServo = hardwareMap.get(Servo.class, "wallServo");
+        light = hardwareMap.get(DcMotorSimple.class, "light");
 
-        initialPose = new Pose2d(50, -50, Math.toRadians(-45));
+        Pose2d initialPose = new Pose2d(RedAutoConfigClose.START_X, RedAutoConfigClose.START_Y, Math.toRadians(RedAutoConfigClose.START_H));
         drive = new MecanumDrive(hardwareMap, initialPose);
 
-        VelConstraint baseVel = new MinVelConstraint(Arrays.asList(
-                new TranslationalVelConstraint(50.0),          // in/s
-                new AngularVelConstraint(Math.toRadians(180))  // rad/s
-        ));
-        AccelConstraint baseAccel = new ProfileAccelConstraint(-30.0, 30.0); // in/s^2
+        VelConstraint fastVel = new MinVelConstraint(Arrays.asList(new TranslationalVelConstraint(RedAutoConfigClose.TRAVEL_VEL)));
+        VelConstraint slowVel = new MinVelConstraint(Arrays.asList(new TranslationalVelConstraint(RedFarAuto.AutoConfig.COLLECT_VEL)));
 
+
+        // --- PHASE 1: Initial Score ---
         Action phase1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(20, -52))
-                .turn(Math.toRadians(45))
-                .waitSeconds(0.5)
-                .stopAndAdd(
-                        new ParallelAction(
-                                ramp.rampUp(4, 1),
-                                outtake.roll(4, 1)
-                        )
+                .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_SHOOT))
+                .strafeTo(new Vector2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y))
+                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1),intake.roll(RedAutoConfigClose.SCORE_DWELL,1)))
+                .build();
+
+        Action phase2 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y, Math.toRadians(RedAutoConfigClose.P1_TURN)))
+                .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_PICKUP))
+                .setTangent(Math.toRadians(-90))
+                // 1. AVOIDANCE MOVE: Strafe to a "Clearance" point first.
+                .strafeToLinearHeading(
+                        new Vector2d(RedAutoConfigClose.P2_1_COLLECT_X, RedAutoConfigClose.P2_1_COLLECT_Y),
+                        Math.toRadians(90),
+                        fastVel
                 )
+
+                // 3. COLLECTION: Final push
+                .strafeTo(new Vector2d(RedAutoConfigClose.P2_2_COLLECT_X, RedAutoConfigClose.P2_2_COLLECT_Y),slowVel)
                 .build();
 
-        Action phase2 = drive.actionBuilder(new Pose2d(12, -52, 0))
-                .turn(Math.toRadians(135))
-                .strafeTo(new Vector2d(5, -60))
-                .strafeTo(new Vector2d(30, -65))
+        // --- PHASE 3: Return Score ---
+        Action phase3 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P2_2_COLLECT_X, RedAutoConfigClose.P2_2_COLLECT_Y, Math.toRadians(RedAutoConfigClose.P2_TURN)))
+                .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_SHOOT))
+                .strafeToLinearHeading(new Vector2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y),Math.toRadians(RedAutoConfigClose.START_H),fastVel)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1),intake.roll(RedAutoConfigClose.SCORE_DWELL,1)))
                 .build();
 
-        Action phase3 = drive.actionBuilder(new Pose2d(20, -65, Math.toRadians(135)))
-                .strafeTo(new Vector2d(12, -52))
-                .waitSeconds(0.5)
-                .stopAndAdd(
-                        new ParallelAction(
-                                ramp.rampUp(4, 1),
-                                outtake.roll(4, 1)
-                        )
+        Action phase4 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y,Math.toRadians(RedAutoConfigClose.START_H)))
+                .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_PICKUP))
+                .setTangent(Math.toRadians(-90))
+                // 1. AVOIDANCE MOVE: Strafe to a "Clearance" point first.
+                .strafeToLinearHeading(
+                        new Vector2d(RedAutoConfigClose.P3_1_COLLECT_X, RedAutoConfigClose.P3_1_COLLECT_Y),
+                        Math.toRadians(90),
+                        fastVel
                 )
+
+                // 3. COLLECTION: Final push
+                .strafeTo(new Vector2d(RedAutoConfigClose.P3_2_COLLECT_X, RedAutoConfigClose.P3_2_COLLECT_Y),slowVel)
                 .build();
 
-        Action phase4 = drive.actionBuilder(new Pose2d(12, -52, Math.toRadians(135)))
+        Action phase5 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P3_2_COLLECT_X, RedAutoConfigClose.P3_2_COLLECT_Y, Math.toRadians(RedAutoConfigClose.START_H)))
+                .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_SHOOT))
+                .strafeToLinearHeading(new Vector2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y+12 ),Math.toRadians(RedAutoConfigClose.START_H),fastVel)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1),intake.roll(RedAutoConfigClose.SCORE_DWELL,1)))
                 .build();
+        // Light Status Action
+        Action lightStatus = (p) -> {
+            if (Math.abs(launcher.getVelocity() - RedAutoConfigClose.LAUNCHER_VEL) <= RedAutoConfigClose.VEL_THRESHOLD) light.setPower(1);
+            else light.setPower(0);
+            return true;
+        };
 
         waitForStart();
-
         if (isStopRequested()) return;
 
-        Actions.runBlocking(new SequentialAction(
-                new ParallelAction(
-                    new SequentialAction(
-                            phase1,
-                            new ParallelAction(
-                                    phase2,
-                                    intake.roll(5, 0.9),
-                                    ramp.rampUp(5, 0.6),
-                                    outtake.roll(5, -0.55)
-                            ),
-                            phase3
-                    ),
-                    launcher.shoot(-1150, 30)
+        Actions.runBlocking(new ParallelAction(
+                launcher.shoot(RedAutoConfigClose.LAUNCHER_VEL, 30),
+                lightStatus,
+                new SequentialAction(
+                        phase1,
+                        new ParallelAction(phase2, intake.dynamicRoll(RedAutoConfigClose.COLLECT_TIME, 1.0), ramp.rampUp(RedAutoConfigClose.COLLECT_TIME, 1.0)),
+                        phase3,
+                        new ParallelAction(phase4, intake.dynamicRoll(RedAutoConfigClose.COLLECT_TIME, 1.0), ramp.rampUp(RedAutoConfigClose.COLLECT_TIME, 1.0)),
+                        phase5
                 )
-            )
-        );
 
+        ));
     }
 }

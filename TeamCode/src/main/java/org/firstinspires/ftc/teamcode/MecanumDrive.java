@@ -32,7 +32,6 @@ import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -64,14 +63,14 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
 
         // drive model parameters
-        public double inPerTick = 1;
-        public double lateralInPerTick = 0.7860856768927917;
-        public double trackWidthTicks = 13.734928469582774;
+        public double inPerTick = 0.02254050247;
+        public double lateralInPerTick = 0.02317161477;
+        public double trackWidthTicks = 1257.6898509047294;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.1089674746616118;
-        public double kV = 0.20702268239448957;
-        public double kA = 0.001;
+        public double kS = 1.6786746237975363;
+        public double kV = 0.0038389033130358584;
+        public double kA = 0.000565;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -139,7 +138,9 @@ public final class MecanumDrive {
             imu = lazyImu.get();
 
             // TODO: reverse encoders if needed
-            //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
             this.pose = pose;
         }
@@ -248,7 +249,7 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new OTOSLocalizer(hardwareMap, pose);
+        localizer = new DriveLocalizer(pose);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
@@ -349,6 +350,7 @@ public final class MecanumDrive {
 
             // only draw when active; only one drive action should be active at a time
             Canvas c = p.fieldOverlay();
+            drawGrid(c);
             drawPoseHistory(c);
 
             c.setStroke("#4CAF50");
@@ -430,6 +432,7 @@ public final class MecanumDrive {
             rightFront.setPower(feedforward.compute(wheelVels.rightFront) / voltage);
 
             Canvas c = p.fieldOverlay();
+            drawGrid(c);
             drawPoseHistory(c);
 
             c.setStroke("#4CAF50");
@@ -450,7 +453,15 @@ public final class MecanumDrive {
             c.fillCircle(turn.beginPose.position.x, turn.beginPose.position.y, 2);
         }
     }
-
+    // Add this inside the MecanumDrive class
+    private void drawGrid(Canvas c) {
+        c.setStroke("#333333"); // Dark gray so it's not distracting
+        c.setStrokeWidth(1);
+        for (int i = -72; i <= 72; i += 24) {
+            c.strokeLine(i, -72, i, 72); // Vertical lines
+            c.strokeLine(-72, i, 72, i); // Horizontal lines
+        }
+    }
     public PoseVelocity2d updatePoseEstimate() {
         PoseVelocity2d vel = localizer.update();
         poseHistory.add(localizer.getPose());
