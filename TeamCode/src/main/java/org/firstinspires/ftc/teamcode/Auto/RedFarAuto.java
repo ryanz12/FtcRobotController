@@ -31,9 +31,6 @@ public class RedFarAuto extends LinearOpMode {
         // --- Speed & Timing ---
         public static double TRAVEL_VEL = 70.0;
         public static double COLLECT_VEL = 15.0;
-        public static double COLLECT_WAIT = 0.2;
-        public static double BACKOFF_DIST = 5.0;
-
         // --- Servo Positions ---
         public static double WALL_SERVO_PICKUP = 0.0;
         public static double WALL_SERVO_SHOOT = 0.5;
@@ -44,16 +41,19 @@ public class RedFarAuto extends LinearOpMode {
         public static double START_H = 0;
         public static double SCORE_X = -60;
         public static double SCORE_Y = 10;
-        public static double SCORE_H = -25;
-        public static double SCORE_Y_OFFSET = -4.0;
+        public static double SCORE_H = -36;
 
-        public static double P2_X = -33;
-        public static double P2_COLLECT_Y = -53;
-        public static double P4_X = -7;
-        public static double P4_COLLECT_Y = -53;
+        public static double SCORE_H_1 = -23;
+        public static double SCORE_H_2 = -23;
+
+
+        public static double P2_X = -35;
+        public static double P2_COLLECT_Y = -45;
+        public static double P4_X = -13;
+        public static double P4_COLLECT_Y = -45;
 
         // --- Subsystems ---
-        public static double LAUNCHER_VEL = -500;
+        public static double LAUNCHER_VEL = -1500;
         public static double VEL_THRESHOLD = 25; // Tolerance for the light to turn on
         public static double RAMP_POWER = 0.85 ;
         public static double SCORE_DWELL = 3.0;
@@ -86,8 +86,8 @@ public class RedFarAuto extends LinearOpMode {
         Action phase1 = drive.actionBuilder(initialPose)
                 .afterTime(0, () -> wallServo.setPosition(AutoConfig.WALL_SERVO_SHOOT))
                 .strafeToLinearHeading(new Vector2d(AutoConfig.SCORE_X, AutoConfig.SCORE_Y), Math.toRadians(AutoConfig.SCORE_H), fastVel)
-                .waitSeconds(2)
-                .stopAndAdd(new ParallelAction(ramp.rampUp(AutoConfig.SCORE_DWELL, 1), outtake.roll(AutoConfig.SCORE_DWELL, 1)))
+                .waitSeconds(1.5)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(4.5, 1), outtake.roll(4.5, 1),intake.rampUpRoll(AutoConfig.SCORE_DWELL,0,1)))
                 .build();
 
         // Phase 2: Collection 1
@@ -99,14 +99,14 @@ public class RedFarAuto extends LinearOpMode {
                 .build();
 
         // Phase 3: Return Score 1
-        Action phase3 = drive.actionBuilder(new Pose2d(AutoConfig.P2_X, AutoConfig.P2_COLLECT_Y + AutoConfig.BACKOFF_DIST, Math.toRadians(90)))
+        Action phase3 = drive.actionBuilder(new Pose2d(AutoConfig.P2_X, AutoConfig.P2_COLLECT_Y, Math.toRadians(90)))
                 .afterTime(0, () -> wallServo.setPosition(AutoConfig.WALL_SERVO_SHOOT))
-                .strafeToLinearHeading(new Vector2d(AutoConfig.SCORE_X, AutoConfig.SCORE_Y), Math.toRadians(AutoConfig.SCORE_H), fastVel)
-                .stopAndAdd(new ParallelAction(ramp.rampUp(AutoConfig.SCORE_DWELL, 1), outtake.roll(AutoConfig.SCORE_DWELL, 1), intake.roll(AutoConfig.SCORE_DWELL,0.7)))
+                .strafeToLinearHeading(new Vector2d(AutoConfig.SCORE_X, AutoConfig.SCORE_Y), Math.toRadians(AutoConfig.SCORE_H_1), fastVel)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(AutoConfig.SCORE_DWELL, 1), outtake.roll(AutoConfig.SCORE_DWELL, 1), intake.rampUpRoll(AutoConfig.SCORE_DWELL,0,1)))
                 .build();
 
         // Phase 4: Collection 2
-        Action phase4 = drive.actionBuilder(new Pose2d(AutoConfig.SCORE_X, AutoConfig.SCORE_Y, Math.toRadians(AutoConfig.SCORE_H)))
+        Action phase4 = drive.actionBuilder(new Pose2d(AutoConfig.SCORE_X, AutoConfig.SCORE_Y, Math.toRadians(AutoConfig.SCORE_H_1)))
                 .afterTime(0, () -> wallServo.setPosition(AutoConfig.WALL_SERVO_PICKUP))
                 .setTangent(Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(AutoConfig.P4_X, -17), Math.toRadians(90), fastVel)
@@ -114,10 +114,10 @@ public class RedFarAuto extends LinearOpMode {
                 .build();
 
         // Phase 5: Final Score & End Match
-        Action phase5 = drive.actionBuilder(new Pose2d(AutoConfig.P4_X, AutoConfig.P4_COLLECT_Y + AutoConfig.BACKOFF_DIST, Math.toRadians(90)))
+        Action phase5 = drive.actionBuilder(new Pose2d(AutoConfig.P4_X, AutoConfig.P4_COLLECT_Y, Math.toRadians(90)))
                 .afterTime(0, () -> wallServo.setPosition(AutoConfig.WALL_SERVO_SHOOT))
-                .strafeToLinearHeading(new Vector2d(AutoConfig.SCORE_X+8, AutoConfig.SCORE_Y-4 + AutoConfig.SCORE_Y_OFFSET), Math.toRadians(AutoConfig.SCORE_H), fastVel)
-                .stopAndAdd(new ParallelAction(ramp.rampUp(10.0, 1), outtake.roll(10.0, 1),intake.roll(10,0.7)))
+                .strafeToLinearHeading(new Vector2d(AutoConfig.SCORE_X, AutoConfig.SCORE_Y), Math.toRadians(AutoConfig.SCORE_H_2), fastVel)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(10.0, 1), outtake.roll(10.0, 1),intake.rampUpRoll(10,0,1)))
                 .build();
 
         // Custom Action to monitor launcher speed and turn light on
@@ -134,7 +134,7 @@ public class RedFarAuto extends LinearOpMode {
         if (isStopRequested()) return;
 
         Actions.runBlocking(new ParallelAction(
-                launcher.shoot(AutoConfig.LAUNCHER_VEL, 30),
+                launcher.shoot(AutoConfig.LAUNCHER_VEL, 35),
                 lightStatus,
                 new SequentialAction(
                         phase1,

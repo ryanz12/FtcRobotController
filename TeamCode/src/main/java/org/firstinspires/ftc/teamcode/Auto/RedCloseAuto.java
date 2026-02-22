@@ -30,7 +30,7 @@ public class RedCloseAuto extends LinearOpMode {
     public static class RedAutoConfigClose {
         // --- Speed & Timing ---
         public static double TRAVEL_VEL = 60.0;
-        public static double SCORE_DWELL = 5.0; // 5s launch sequences
+        public static double SCORE_DWELL = 3.0; // 5s launch sequences
         public static double COLLECT_TIME = 5.0;
 
         // --- Start Pose ---
@@ -39,32 +39,29 @@ public class RedCloseAuto extends LinearOpMode {
         public static double START_H = -45.0;
 
         // --- Phase 1: Score 1 ---
-        public static double P1_SCORE_X = 20.0;
-        public static double P1_SCORE_Y = -20;
+        public static double P1_SCORE_X = -10;
+        public static double P1_SCORE_Y = -25;
         public static double P1_TURN = 45.0;
 
         // --- Phase 2: Collect ---
-        public static double P2_TURN = 135.0;
+        public static double P2_1_COLLECT_X = -10;
+        public static double P2_1_COLLECT_Y = -30;
 
-        public static double P2_1_COLLECT_X = -8;
-        public static double P2_1_COLLECT_Y = -15;
+        public static double P2_2_COLLECT_X = 0;
 
-        public static double P2_2_COLLECT_X = -8;
-
-        public static double P2_2_COLLECT_Y = -50;
+        public static double P2_2_COLLECT_Y = -70;
 
         // --- Phase 3: Collect ---
         public static double P3_1_COLLECT_X = -35;
-        public static double P3_1_COLLECT_Y = -15;
+        public static double P3_1_COLLECT_Y = -40;
         public static double P3_2_COLLECT_X = -35;
 
-        public static double P3_2_COLLECT_Y = -50;
+        public static double P3_2_COLLECT_Y = -80;
 
 
         // --- Subsystems ---
-        public static double LAUNCHER_VEL = -1150.0;
+        public static double LAUNCHER_VEL = -1200;
         public static double VEL_THRESHOLD = 25.0;
-        public static double RAMP_POWER = 0.7;
         public static double WALL_SERVO_PICKUP = 0.0;
         public static double WALL_SERVO_SHOOT = 0.5;
     }
@@ -97,12 +94,11 @@ public class RedCloseAuto extends LinearOpMode {
         Action phase1 = drive.actionBuilder(initialPose)
                 .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_SHOOT))
                 .strafeTo(new Vector2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y))
-                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1),intake.roll(RedAutoConfigClose.SCORE_DWELL,1)))
+                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1), intake.rampUpRoll(RedAutoConfigClose.SCORE_DWELL,0,1)))
                 .build();
 
         Action phase2 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y, Math.toRadians(RedAutoConfigClose.P1_TURN)))
                 .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_PICKUP))
-                .setTangent(Math.toRadians(-90))
                 // 1. AVOIDANCE MOVE: Strafe to a "Clearance" point first.
                 .strafeToLinearHeading(
                         new Vector2d(RedAutoConfigClose.P2_1_COLLECT_X, RedAutoConfigClose.P2_1_COLLECT_Y),
@@ -115,15 +111,14 @@ public class RedCloseAuto extends LinearOpMode {
                 .build();
 
         // --- PHASE 3: Return Score ---
-        Action phase3 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P2_2_COLLECT_X, RedAutoConfigClose.P2_2_COLLECT_Y, Math.toRadians(RedAutoConfigClose.P2_TURN)))
+        Action phase3 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P2_2_COLLECT_X, RedAutoConfigClose.P2_2_COLLECT_Y, Math.toRadians(-90)))
                 .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_SHOOT))
                 .strafeToLinearHeading(new Vector2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y),Math.toRadians(RedAutoConfigClose.START_H),fastVel)
-                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1),intake.roll(RedAutoConfigClose.SCORE_DWELL,1)))
+                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1),intake.rampUpRoll(RedAutoConfigClose.SCORE_DWELL,0,1)))
                 .build();
 
-        Action phase4 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y,Math.toRadians(RedAutoConfigClose.START_H)))
+        Action phase4 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y,Math.toRadians(RedAutoConfigClose.START_H+2)))
                 .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_PICKUP))
-                .setTangent(Math.toRadians(-90))
                 // 1. AVOIDANCE MOVE: Strafe to a "Clearance" point first.
                 .strafeToLinearHeading(
                         new Vector2d(RedAutoConfigClose.P3_1_COLLECT_X, RedAutoConfigClose.P3_1_COLLECT_Y),
@@ -137,8 +132,8 @@ public class RedCloseAuto extends LinearOpMode {
 
         Action phase5 = drive.actionBuilder(new Pose2d(RedAutoConfigClose.P3_2_COLLECT_X, RedAutoConfigClose.P3_2_COLLECT_Y, Math.toRadians(RedAutoConfigClose.START_H)))
                 .afterTime(0, () -> wallServo.setPosition(RedAutoConfigClose.WALL_SERVO_SHOOT))
-                .strafeToLinearHeading(new Vector2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y+12 ),Math.toRadians(RedAutoConfigClose.START_H),fastVel)
-                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1),intake.roll(RedAutoConfigClose.SCORE_DWELL,1)))
+                .strafeToLinearHeading(new Vector2d(RedAutoConfigClose.P1_SCORE_X, RedAutoConfigClose.P1_SCORE_Y+12 ),Math.toRadians(RedAutoConfigClose.START_H+2),fastVel)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(RedAutoConfigClose.SCORE_DWELL, 1), outtake.roll(RedAutoConfigClose.SCORE_DWELL, 1),intake.rampUpRoll(RedAutoConfigClose.SCORE_DWELL,0,1)))
                 .build();
         // Light Status Action
         Action lightStatus = (p) -> {

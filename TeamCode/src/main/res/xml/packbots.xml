@@ -43,50 +43,44 @@
         serialNumber="(embedded)" parentModuleAddress="2">
         <!--control hub configurations-->
         <!--motors-->
-
-
             <!--color sensor-->
-<!--        <RevColorSensorV3 name="[...]" port="0" bus="[...]" />-->
-
+            <!--<RevColorSensorV3 name="[...]" port="0" bus="[...]" />-->
         <LynxModule name="Expansion Hub 1" port="1">
         <!--Expansion hub configurations-->
-
-
-                <!--We need to figure out how to add distance sensor to the xml -->
+        <!--We need to figure out how to add distance sensor to the xml -->
 <!--            <RevDistanceSensor name="[...]" port="1" bus="[...]" />-->
-<!--            <goBILDA5201SeriesMotor name="intakeMotor" port="0" />-->
             <goBILDA5202SeriesMotor name="launchMotor" port="0" />
             <goBILDA5202SeriesMotor name="intakeMotor" port="1" />
             <goBILDA5202SeriesMotor name="light" port="3" />
-
             <Servo name="wallServo" port="0"/>
             <SparkFunOTOS name="sensor_otos" port="0" bus="2" />
             <REV_VL53L0X_RANGE_SENSOR name="distanceSensor" port="0" bus="3" />
+<!--        <goBILDA5202SeriesMotor name="rotateMotor" port="2" />-->
+<!--        <goBILDA5201SeriesMotor name="specimenSlide" port="3" />-->
+            <!--
+                **********************************************************
 
-            <!--            <goBILDA5202SeriesMotor name="rotateMotor" port="2" />-->
-<!--            <goBILDA5201SeriesMotor name="specimenSlide" port="3" />-->
-            <!-- **********************************************************
+                DC Motors
 
-            DC Motors
+                The "port" value refers to the physical port where the motor
+                is connected to the REV expansion hub, numbered 0 - 3.
 
-            The "port" value refers to the physical port where the motor
-            is connected to the REV expansion hub, numbered 0 - 3.
+                The element named "Motor" is generic, but it will not set
+                tuned PID(F) values for the type of motor plugged into the hub.
 
-            The element named "Motor" is generic, but it will not set
-            tuned PID(F) values for the type of motor plugged into the hub.
+                You will observe more consistent velocity PID (RUN_WITH_ENCODERS)
+                or RUN_TO_POSITION behavior if you can use the specific motor types
+                provided by the SDK.
 
-            You will observe more consistent velocity PID (RUN_WITH_ENCODERS)
-            or RUN_TO_POSITION behavior if you can use the specific motor types
-            provided by the SDK.
+                In this first example, you'll notice a color comment. We've found
+                that it is very helpful to use wire marking tape on the ports on
+                the expansion hub, the cables that plug into them, both sides
+                of any connections between the hub and the device, and the devices
+                itself. It makes it very easy to identify what to check or replace
+                when something is not working correctly.
 
-            In this first example, you'll notice a color comment. We've found
-            that it is very helpful to use wire marking tape on the ports on
-            the expansion hub, the cables that plug into them, both sides
-            of any connections between the hub and the device, and the devices
-            itself. It makes it very easy to identify what to check or replace
-            when something is not working correctly.
-
-            ************************************************************* -->
+                *************************************************************
+            -->
 
 <!--            <Motor name=".."  port="[...]" /> &lt;!&ndash; Yellow &ndash;&gt;-->
 
@@ -95,25 +89,21 @@
             GoBILDA Gearmotors
              -->
             <!--motors-->
+            <!--
+                *************************************************************
 
+                Servos are pretty straightforward. Ports are numbered 0-5
 
+                Configuring a servo as a ContinuousRotationServo in this file
+                will present an interface in software that "feels" more like a
+                DCMotor for servos that are, or are able to be put into continuous
+                rotation mode.
 
+                See com.qualcomm.robotcore.hardware.CRServo in the SDK for more
+                details.
 
-
-
-            <!-- *************************************************************
-
-            Servos are pretty straightforward. Ports are numbered 0-5
-
-            Configuring a servo as a ContinuousRotationServo in this file
-            will present an interface in software that "feels" more like a
-            DCMotor for servos that are, or are able to be put into continuous
-            rotation mode.
-
-            See com.qualcomm.robotcore.hardware.CRServo in the SDK for more
-            details.
-
-            ************************************************************* -->
+                *************************************************************
+            -->
 
 <!--            <Servo name="[...] port=[...]" />-->
 
@@ -128,71 +118,64 @@
 
 <!--            <RevSPARKMini name="[...]" port="[...]" />-->
 
-            <!-- *************************************************************
+            <!--
+            *************************************************************
+                Digital Devices on REV hubs look like this.
 
-            Digital Devices on REV hubs look like this.
+                REV's magnetic limit switch (http://www.revrobotics.com/rev-31-1462/)
+                sends output voltage on 'n' and 'n+1', so odd or even port
+                numbers work for the same sensor.
 
-            REV's magnetic limit switch (http://www.revrobotics.com/rev-31-1462/)
-            sends output voltage on 'n' and 'n+1', so odd or even port
-            numbers work for the same sensor.
+                However, REV's touch sensor, which can either be configured as
+                a plain "DigitalDevice" or "RevTouchSensor" always sends on n+1,
+                so that will always be an odd port number.
 
-            However, REV's touch sensor, which can either be configured as
-            a plain "DigitalDevice" or "RevTouchSensor" always sends on n+1,
-            so that will always be an odd port number.
+                Since we don't use any of REV's splitter cables on our robots,
+                we try and always use the odd port number in case we switch
+                one type of sensor out for the other.
 
-            Since we don't use any of REV's splitter cables on our robots,
-            we try and always use the odd port number in case we switch
-            one type of sensor out for the other.
-
-            If you're attaching something else to your REV Hub to the digital
-            I/O ports, check your spec sheet for which pin will send output
-            signal, and set "port" appropriately.
-
-            ************************************************************* -->
+                If you're attaching something else to your REV Hub to the digital
+                I/O ports, check your spec sheet for which pin will send output
+                signal, and set "port" appropriately.
+                *************************************************************
+            -->
 
 <!--            <DigitalDevice name="[...]" port="[... (odd)]" />-->
 <!--            <RevTouchSensor name="[...] port=[... (odd)]" />-->
 
-            <!-- *************************************************************
-
-            I2C Devices
-
-            Bus numbers (sockets on the hub) run from 0 to 3. An I2C device
-            plugged into the physical socket labeled "0" on the hub should use
-            port="1" and bus="0". I2C devices plugged into sockets labeled 1-3
-            on the hub should use port="0" and bus="[socket number on hub]"
-
-            ************************************************************* -->
+            <!--
+                *************************************************************
+                I2C Devices
+                Bus numbers (sockets on the hub) run from 0 to 3. An I2C device
+                plugged into the physical socket labeled "0" on the hub should use
+                port="1" and bus="0". I2C devices plugged into sockets labeled 1-3
+                on the hub should use port="0" and bus="[socket number on hub]"
+                *************************************************************
+             -->
 
             <!-- REV Time-of-Flight 2m Distance Sensor -->
-<!--            <REV_VL53L0X_RANGE_SENSOR name="[...]" port="0" bus="[...]" />-->
+            <!--<REV_VL53L0X_RANGE_SENSOR name="[...]" port="0" bus="[...]" />-->
 
 <!--            &lt;!&ndash; V1 and V2 of the REV color/distance sensor &ndash;&gt;-->
 
 <!--            <LynxColorSensor name="[...]" port="0" bus="[...]" />-->
-
             <!--
-
-            Use for the current v3 REV color sensor. NOTE that color and
-              distance values for v3 differ from V1-V2!
+            Use for the current v3 REV color sensor. NOTE that color and distance values for v3 differ from V1-V2!
 
             http://www.revrobotics.com/rev-31-1557/)
-
             -->
-
-
-
 <!--            <RevBlinkinLedDriver name="[...]" port="0" bus="[...]" />-->
         </LynxModule>goBILDA5202SeriesMotor
 
 <!--        <LynxModule name="Secondary Hub" port="3">-->
 
-            <!-- *************************************************************
-
-            Add devices here that are plugged into the secondary REV expansion
-            hub, following the syntax above.
-/2m distance sensor
-            ************************************************************* -->
+            <!--
+                *************************************************************
+                Add devices here that are plugged into the secondary REV expansion
+                hub, following the syntax above.
+                /2m distance sensor
+                *************************************************************
+            -->
 
 <!--        </LynxModule>-->
         <LynxModule name="Control Hub" port="2">
@@ -202,7 +185,6 @@
             <goBILDA5201SeriesMotor name="rightFront" port="1" />
             <goBILDA5202SeriesMotor name="leftBack" port="2" />
             <goBILDA5202SeriesMotor name="rightBack" port="3" />
-<!--            <ContinuousRotationServo name="intakeServo" port="0"/>-->
             <ContinuousRotationServo name="beltServoOne" port="0"/>
             <ContinuousRotationServo name="beltServoTwo" port="1"/>
             <ContinuousRotationServo name="outtakeServo" port="3"/>

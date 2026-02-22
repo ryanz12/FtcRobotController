@@ -30,8 +30,6 @@ public class BlueFarAuto extends LinearOpMode {
     public static class BlueAutoConfig {
         public static double TRAVEL_VEL = 70.0;
         public static double COLLECT_VEL = 15.0;
-        public static double COLLECT_WAIT = 0.2;
-        public static double BACKOFF_DIST = 5.0;
 
         public static double WALL_SERVO_PICKUP = 0.0;
         public static double WALL_SERVO_SHOOT = 0.5;
@@ -43,17 +41,20 @@ public class BlueFarAuto extends LinearOpMode {
 
         public static double SCORE_X = -60;
         public static double SCORE_Y = -10;
-        public static double SCORE_H = -25; // Inverted from -25
+        public static double SCORE_H = 32; // Inverted from -25
+
+        public static double SCORE_H_1 = 20;
+        public static double SCORE_H_2 = 20;
+
         public static double SCORE_Y_OFFSET = 4.0; // Inverted from -4.0
 
         public static double P2_X = -33;
         public static double P2_COLLECT_Y = 53;
-        public static double P4_X = -7;
+        public static double P4_X = -15;
         public static double P4_COLLECT_Y = 53;
 
-        public static double LAUNCHER_VEL = -500;
+        public static double LAUNCHER_VEL = -1550;
         public static double VEL_THRESHOLD = 25;
-        public static double RAMP_POWER = 0.7;
         public static double SCORE_DWELL = 3.0;
     }
 
@@ -83,9 +84,9 @@ public class BlueFarAuto extends LinearOpMode {
         // Phase 1: Initial Score
         Action phase1 = drive.actionBuilder(initialPose)
                 .afterTime(0, () -> wallServo.setPosition(BlueAutoConfig.WALL_SERVO_SHOOT))
-                .strafeToLinearHeading(new Vector2d(BlueAutoConfig.SCORE_X, BlueAutoConfig.SCORE_Y), Math.toRadians(BlueAutoConfig.SCORE_H), fastVel)
                 .waitSeconds(1.5)
-                .stopAndAdd(new ParallelAction(ramp.rampUp(BlueAutoConfig.SCORE_DWELL, 1), outtake.roll(BlueAutoConfig.SCORE_DWELL, 1)))
+                .strafeToLinearHeading(new Vector2d(BlueAutoConfig.SCORE_X, BlueAutoConfig.SCORE_Y), Math.toRadians(BlueAutoConfig.SCORE_H), fastVel)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(4.5, 1), outtake.roll(4.5, 1),intake.rampUpRoll(4.5,0.2,1)))
                 .build();
 
         // Phase 2: Collection 1
@@ -97,14 +98,14 @@ public class BlueFarAuto extends LinearOpMode {
                 .build();
 
         // Phase 3: Return Score 1
-        Action phase3 = drive.actionBuilder(new Pose2d(BlueAutoConfig.P2_X, BlueAutoConfig.P2_COLLECT_Y - BlueAutoConfig.BACKOFF_DIST, Math.toRadians(-90)))
+        Action phase3 = drive.actionBuilder(new Pose2d(BlueAutoConfig.P2_X, BlueAutoConfig.P2_COLLECT_Y, Math.toRadians(-90)))
                 .afterTime(0, () -> wallServo.setPosition(BlueAutoConfig.WALL_SERVO_SHOOT))
-                .strafeToLinearHeading(new Vector2d(BlueAutoConfig.SCORE_X, BlueAutoConfig.SCORE_Y), Math.toRadians(BlueAutoConfig.SCORE_H), fastVel)
-                .stopAndAdd(new ParallelAction(ramp.rampUp(BlueAutoConfig.SCORE_DWELL, 1), outtake.roll(BlueAutoConfig.SCORE_DWELL, 1),intake.roll(BlueAutoConfig.SCORE_DWELL,.7)))
+                .strafeToLinearHeading(new Vector2d(BlueAutoConfig.SCORE_X-4, BlueAutoConfig.SCORE_Y), Math.toRadians(BlueAutoConfig.SCORE_H_1), fastVel)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(BlueAutoConfig.SCORE_DWELL, 1), outtake.roll(BlueAutoConfig.SCORE_DWELL, 1),intake.rampUpRoll(BlueAutoConfig.SCORE_DWELL,0,1)))
                 .build();
 
         // Phase 4: Collection 2
-        Action phase4 = drive.actionBuilder(new Pose2d(BlueAutoConfig.SCORE_X, BlueAutoConfig.SCORE_Y, Math.toRadians(BlueAutoConfig.SCORE_H)))
+        Action phase4 = drive.actionBuilder(new Pose2d(BlueAutoConfig.SCORE_X, BlueAutoConfig.SCORE_Y, Math.toRadians(BlueAutoConfig.SCORE_H_1)))
                 .afterTime(0, () -> wallServo.setPosition(BlueAutoConfig.WALL_SERVO_PICKUP))
                 .setTangent(Math.toRadians(-90))
                 .strafeToLinearHeading(new Vector2d(BlueAutoConfig.P4_X, 17), Math.toRadians(-90), fastVel)
@@ -112,10 +113,10 @@ public class BlueFarAuto extends LinearOpMode {
                 .build();
 
         // Phase 5: Final Score (No Park)
-        Action phase5 = drive.actionBuilder(new Pose2d(BlueAutoConfig.P4_X, BlueAutoConfig.P4_COLLECT_Y - BlueAutoConfig.BACKOFF_DIST, Math.toRadians(-90)))
+        Action phase5 = drive.actionBuilder(new Pose2d(BlueAutoConfig.P4_X, BlueAutoConfig.P4_COLLECT_Y, Math.toRadians(-90)))
                 .afterTime(0, () -> wallServo.setPosition(BlueAutoConfig.WALL_SERVO_SHOOT))
-                .strafeToLinearHeading(new Vector2d(BlueAutoConfig.SCORE_X, BlueAutoConfig.SCORE_Y + BlueAutoConfig.SCORE_Y_OFFSET), Math.toRadians(BlueAutoConfig.SCORE_H), fastVel)
-                .stopAndAdd(new ParallelAction(ramp.rampUp(10.0, 1), outtake.roll(10.0, 1),intake.roll(10.0,1)))
+                .strafeToLinearHeading(new Vector2d(BlueAutoConfig.SCORE_X-5.5, BlueAutoConfig.SCORE_Y -3), Math.toRadians(BlueAutoConfig.SCORE_H_2), fastVel)
+                .stopAndAdd(new ParallelAction(ramp.rampUp(10.0, 1), outtake.roll(10.0, 1),intake.roll(10.0,1), intake.rampUpRoll(10,0,1)))
                 .build();
 
         // Light Status Action
@@ -133,7 +134,7 @@ public class BlueFarAuto extends LinearOpMode {
 
         Actions.runBlocking(new ParallelAction(
                 launcher.shoot(RedFarAuto.AutoConfig.LAUNCHER_VEL, 30),
-                lightStatus,
+//                lightStatus,
                 new SequentialAction(
                         phase1,
                         new ParallelAction(phase2, intake.dynamicRoll(5, 0.7), ramp.rampUp(6, RedFarAuto.AutoConfig.RAMP_POWER)),
